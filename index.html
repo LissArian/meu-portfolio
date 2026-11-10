@@ -1,0 +1,3015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heloisa Cunha | Home Office 3D & Portfólio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1226;
+            --surface-solid: #fffafd;
+            --surface-elevated: #fbf5fe;
+            --border-line: #eedbf5;
+            --border-highlight: #d8b4fe;
+            --text-main: #2e1065;
+            --text-muted: #6b5b75;
+            --text-dim: #9ca3af;
+            --accent-pink: #ec4899;
+            --accent-purple: #8b5cf6;
+            --accent-mint: #10b981;
+            --accent-mint-bg: #ecfdf5;
+            --accent-pink-bg: #fdf2f8;
+            --accent-purple-bg: #f5f3ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            user-select: none;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* HUD & Overlay Header */
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: auto;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.94);
+            padding: 7px 14px 7px 9px;
+            border: 1px solid #eedbf5;
+            box-shadow: 0 4px 18px rgba(46, 16, 101, 0.08);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .brand:hover {
+            border-color: #d8b4fe;
+            box-shadow: 0 6px 24px rgba(236, 72, 153, 0.15);
+        }
+
+        .monogram {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            background: #fdf2f8;
+            border: 1.5px solid #f472b6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #db2777;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-info h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #2e1065;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-info p {
+            font-size: 0.74rem;
+            color: #7c6f87;
+            letter-spacing: 0.01em;
+        }
+
+        .hud-actions {
+            display: flex;
+            gap: 8px;
+            pointer-events: auto;
+        }
+
+        .hud-btn {
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid #eedbf5;
+            color: #2e1065;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(46, 16, 101, 0.06);
+        }
+
+        .hud-btn:hover {
+            background: #fbf5fe;
+            border-color: #d8b4fe;
+            color: #7c3aed;
+            transform: translateY(-1px);
+        }
+
+        .hud-btn.primary {
+            background: #ec4899;
+            color: #ffffff;
+            border: 1px solid #db2777;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(236, 72, 153, 0.28);
+        }
+
+        .hud-btn.primary:hover {
+            background: #db2777;
+            border-color: #be185d;
+            color: #ffffff;
+        }
+
+        /* Dica de navegação inferior */
+        .controls-hint {
+            position: absolute;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid #eedbf5;
+            padding: 7px 18px;
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.74rem;
+            color: #5c4d68;
+            box-shadow: 0 8px 30px rgba(46, 16, 101, 0.1);
+        }
+
+        .controls-hint span.highlight {
+            color: #db2777;
+            font-weight: 700;
+        }
+
+        .badge-live {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(0.85); }
+        }
+
+        /* 3D Tooltip Flutuante no Hover */
+        #tooltip-3d {
+            position: absolute;
+            z-index: 20;
+            pointer-events: none;
+            background: #ffffff;
+            border: 1px solid #d8b4fe;
+            color: #2e1065;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transform: translate(-50%, -130%);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.18);
+            display: none;
+            transition: opacity 0.15s ease;
+        }
+
+        /* Marcadores de cena 3D (Estilo Blueprint Pastel / Editorial) */
+        .hotspot-pin {
+            position: absolute;
+            z-index: 15;
+            transform: translate(-50%, -50%);
+            pointer-events: auto;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #eedbf5;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #2e1065;
+            letter-spacing: 0.04em;
+            box-shadow: 0 6px 20px rgba(46, 16, 101, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .hotspot-pin:hover {
+            transform: translate(-50%, -60%);
+            background: #fbf5fe;
+            border-color: #c084fc;
+            color: #7c3aed;
+        }
+
+        .hotspot-pin .pin-prefix {
+            color: #ec4899;
+            font-weight: 700;
+        }
+
+        /* Painel Lateral / Drawer de Conteúdo (Editorial Pastel Kawaii) */
+        .drawer-overlay {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 18, 38, 0.65);
+            backdrop-filter: blur(3px);
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .drawer {
+            position: absolute;
+            top: 0;
+            right: -580px;
+            width: 540px;
+            max-width: 92vw;
+            height: 100%;
+            background: #fffafd;
+            border-left: 1px solid #eedbf5;
+            box-shadow: -20px 0 60px rgba(46, 16, 101, 0.2);
+            z-index: 35;
+            transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            user-select: text;
+        }
+
+        .drawer.active {
+            right: 0;
+        }
+
+        .drawer-header {
+            padding: 30px 36px 22px;
+            border-bottom: 1px solid #eedbf5;
+            background: #fbf5fe;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .drawer-header-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drawer-index {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #9333ea;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .drawer-title-area {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .drawer-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: #2e1065;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .drawer-subtitle {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.85rem;
+            color: #6b5b75;
+            letter-spacing: 0.01em;
+        }
+
+        .close-btn {
+            background: #ffffff;
+            border: 1px solid #eedbf5;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #7c3aed;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .close-btn:hover {
+            background: #f3e8ff;
+            color: #581c87;
+            border-color: #c084fc;
+        }
+
+        .drawer-content {
+            padding: 28px 36px 40px;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fffafd;
+        }
+
+        .drawer-content::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .drawer-content::-webkit-scrollbar-thumb {
+            background: #eedbf5;
+            border-radius: 4px;
+        }
+
+        /* Lista Editorial de Projetos (Editorial Pastel) */
+        .editorial-entry {
+            border-top: 1px solid #f2e5f5;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .editorial-entry:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .entry-topline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #8b7994;
+        }
+
+        .entry-tag {
+            color: #db2777;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .entry-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #2e1065;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
+        .entry-title .arrow {
+            color: #c084fc;
+            font-weight: 400;
+            transition: transform 0.2s;
+        }
+
+        .editorial-entry:hover .entry-title .arrow {
+            color: #ec4899;
+            transform: translate(2px, -2px);
+        }
+
+        .entry-description {
+            font-size: 0.88rem;
+            color: #4a3e54;
+            line-height: 1.65;
+        }
+
+        .entry-tools-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .entry-tool {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68rem;
+            color: #6b21a8;
+            background: #f5f3ff;
+            border: 1px solid #eedbf5;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        /* Ações Editoriais por Projeto & Links de Conversão */
+        .entry-actions-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #eedbf5;
+        }
+
+        .entry-action-btn {
+            background: #ffffff;
+            border: 1px solid #eedbf5;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #6b5b75;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .entry-action-btn:hover {
+            background: #fbf5fe;
+            color: #7c3aed;
+            border-color: #d8b4fe;
+        }
+
+        .entry-action-btn.primary {
+            background: #fdf2f8;
+            color: #db2777;
+            border-color: #fbcfe8;
+        }
+
+        .entry-action-btn.primary:hover {
+            background: #ec4899;
+            color: #ffffff;
+            border-color: #ec4899;
+        }
+
+        .entry-action-btn.whatsapp {
+            background: #ecfdf5;
+            color: #047857;
+            border-color: #a7f3d0;
+        }
+
+        .entry-action-btn.whatsapp:hover {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        /* Modal do Modo Clássico (Estilo Editorial Pastel) */
+        .classic-modal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(26, 18, 38, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            user-select: text;
+        }
+
+        .classic-modal-container.active {
+            display: flex;
+        }
+
+        .classic-modal {
+            background: #fffafd;
+            border: 1px solid #eedbf5;
+            border-radius: 6px;
+            width: 880px;
+            max-width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 30px 80px rgba(46, 16, 101, 0.25);
+            overflow: hidden;
+        }
+
+        .classic-modal-header {
+            padding: 26px 36px;
+            background: #fbf5fe;
+            border-bottom: 1px solid #eedbf5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .classic-modal-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2e1065;
+        }
+
+        .classic-modal-header p {
+            font-size: 0.85rem;
+            color: #6b5b75;
+        }
+
+        .classic-modal-body {
+            padding: 32px 36px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            background: #fffafd;
+        }
+
+        .classic-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .section-heading {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #9333ea;
+            border-bottom: 2px solid #eedbf5;
+            padding-bottom: 6px;
+            margin-bottom: 14px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .timeline-item {
+            border-left: 2px solid #fbcfe8;
+            padding-left: 14px;
+            margin-bottom: 16px;
+        }
+
+        .timeline-item h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2e1065;
+        }
+
+        .timeline-item .sub {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #8b7994;
+            margin: 2px 0 6px;
+        }
+
+        .timeline-item p {
+            font-size: 0.82rem;
+            color: #4a3e54;
+            line-height: 1.5;
+        }
+
+        .skills-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .skill-badge {
+            background: #f5f3ff;
+            border: 1px solid #eedbf5;
+            color: #6b21a8;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        /* Modal Lightbox (Visualizador Editorial de Amostras Pastel) */
+        .lightbox-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(26, 18, 38, 0.78);
+            z-index: 60;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            backdrop-filter: blur(5px);
+        }
+
+        .lightbox-container.active {
+            display: flex;
+        }
+
+        .lightbox-box {
+            background: #fffafd;
+            border: 1px solid #eedbf5;
+            border-radius: 6px;
+            width: 900px;
+            max-width: 100%;
+            max-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 30px 80px rgba(46, 16, 101, 0.3);
+            overflow: hidden;
+        }
+
+        .lightbox-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #eedbf5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fbf5fe;
+        }
+
+        .lightbox-body {
+            padding: 20px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: #fffafd;
+        }
+
+        .lightbox-image-wrap {
+            width: 100%;
+            max-height: 54vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fdf8ff;
+            border: 1px solid #eedbf5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .lightbox-image-wrap img {
+            max-width: 100%;
+            max-height: 54vh;
+            object-fit: contain;
+            display: block;
+        }
+
+        .lightbox-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .lightbox-desc {
+            font-size: 0.88rem;
+            color: #4a3e54;
+            line-height: 1.6;
+        }
+
+        .lightbox-specs {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #047857;
+            background: #ecfdf5;
+            padding: 8px 12px;
+            border-left: 3px solid #10b981;
+            border-radius: 2px;
+            font-weight: 600;
+        }
+
+        .lightbox-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        /* Modal de Contato & Backend Pastel */
+        .contact-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(26, 18, 38, 0.75);
+            z-index: 55;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            backdrop-filter: blur(4px);
+        }
+
+        .contact-container.active {
+            display: flex;
+        }
+
+        .contact-box {
+            background: #fffafd;
+            border: 1px solid #eedbf5;
+            border-radius: 6px;
+            width: 580px;
+            max-width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 30px 80px rgba(46, 16, 101, 0.3);
+            overflow: hidden;
+        }
+
+        .contact-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #eedbf5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fbf5fe;
+        }
+
+        .contact-body {
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            background: #fffafd;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #6b5b75;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            background: #ffffff;
+            border: 1.5px solid #eedbf5;
+            border-radius: 4px;
+            padding: 10px 14px;
+            color: #2e1065;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            border-color: #ec4899;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 95px;
+        }
+
+        .form-status {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.76rem;
+            padding: 10px 12px;
+            display: none;
+            line-height: 1.45;
+            border-radius: 4px;
+        }
+
+        .form-status.success {
+            display: block;
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .form-status.error {
+            display: block;
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .contact-quick-links {
+            border-top: 1px dashed #eedbf5;
+            padding-top: 14px;
+            margin-top: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .contact-quick-links-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #8b7994;
+            font-weight: 700;
+        }
+
+        .contact-channels {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 14px 18px; }
+            .brand-info p { display: none; }
+            .classic-grid { grid-template-columns: 1fr; }
+            .controls-hint { font-size: 0.7rem; padding: 6px 12px; width: 92%; text-align: center; justify-content: center; }
+            .hotspot-pin { font-size: 0.65rem; padding: 3px 7px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <div id="tooltip-3d"></div>
+
+    <!-- Hotspots de cena (Estilo Editorial / Blueprint) -->
+    <div class="hotspot-pin" id="pin-tech" title="Ver Projetos Tech & UX/UI">
+        <span class="pin-prefix">[01]</span>
+        <span id="pin-tech-label">TECH &bull; UX/UI</span>
+    </div>
+    <div class="hotspot-pin" id="pin-editorial" title="Ver Design Editorial & Livros">
+        <span class="pin-prefix">[02]</span>
+        <span id="pin-editorial-label">EDITORIAL &bull; DESIGN</span>
+    </div>
+    <div class="hotspot-pin" id="pin-ops" title="Ver Operações & Atendimento">
+        <span class="pin-prefix">[03]</span>
+        <span id="pin-ops-label">OPERAÇÕES &bull; CRM</span>
+    </div>
+
+    <!-- Header HUD -->
+    <header>
+        <div class="brand" id="brand-home" title="Voltar para a visualização inicial">
+            <div class="monogram">HC</div>
+            <div class="brand-info">
+                <h1>Heloisa Cunha</h1>
+                <p id="brand-tagline">Designer Editorial &bull; UX/UI &bull; Operações Remotas</p>
+            </div>
+        </div>
+
+        <div class="hud-actions">
+            <button class="hud-btn" id="btn-theme-toggle" title="Alternar Dia/Noite / Toggle Day/Night">
+                <span id="theme-icon">🌙</span> <span id="theme-text">Noite</span>
+            </button>
+            <button class="hud-btn" id="btn-sound-toggle" title="Ligar/Desligar som ambiente suave">
+                <span id="sound-icon">🔇</span> <span id="sound-text">Áudio</span>
+            </button>
+            <button class="hud-btn" id="btn-lamp-toggle" title="Ligar/Desligar luminária de mesa">
+                <span id="lamp-text">💡 Luz</span>
+            </button>
+            <button class="hud-btn" id="btn-classic-mode">
+                <span id="classic-text">📋 Modo Clássico</span>
+            </button>
+            <button class="hud-btn" id="btn-lang-toggle" title="Mudar Idioma / Toggle Language">
+                <span>🌐 <strong id="lang-indicator">PT</strong></span>
+            </button>
+            <a href="https://linkedin.com/in/lisscunha" target="_blank" rel="noopener noreferrer" class="hud-btn">
+                <span>LinkedIn</span> ↗
+            </a>
+            <button class="hud-btn primary" id="btn-contact-open">
+                <span id="contact-text">Contato</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Dica inferior -->
+    <div class="controls-hint">
+        <div class="badge-live"></div>
+        <span id="controls-hint-text"><span>Ambiente Isométrico Interativo:</span> Clique no <span class="highlight">Monitor</span>, nos <span class="highlight">Livros</span> ou no <span class="highlight">Caderno</span></span>
+    </div>
+
+    <!-- Drawer Lateral de Conteúdo (Estilo Editorial / Studio) -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <aside class="drawer" id="drawer">
+        <div class="drawer-header">
+            <div class="drawer-header-meta">
+                <span class="drawer-index" id="drawer-index">INDEX // 01</span>
+                <button class="close-btn" id="drawer-close" aria-label="Fechar painel">[ FECHAR &times; ]</button>
+            </div>
+            <div class="drawer-title-area">
+                <h2 class="drawer-title" id="drawer-title">Desenvolvimento & UX/UI</h2>
+                <div class="drawer-subtitle" id="drawer-subtitle">Código &bull; Interfaces digitais &bull; Experiências 3D</div>
+            </div>
+        </div>
+        <div class="drawer-content" id="drawer-content">
+            <!-- Conteúdo editorial injetado dinamicamente via JS -->
+        </div>
+    </aside>
+
+    <!-- Modal do Modo Clássico (Estilo Charles Bruyerre) -->
+    <div class="classic-modal-container" id="classic-modal-container">
+        <div class="classic-modal">
+            <div class="classic-modal-header">
+                <div>
+                    <h2 style="font-size: 1.3rem; font-weight: 700; color: #ffffff;">Heloisa S. Cunha de Oliveira</h2>
+                    <p style="font-size: 0.85rem; color: #94a3b8;">Pinheiros – ES | heloisaoliveira@zohomail.com | (27) 99768-2682</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="hud-btn" onclick="window.print()" title="Imprimir / Salvar em PDF">
+                        <span>🖨️ Imprimir / Salvar PDF</span>
+                    </button>
+                    <button class="close-btn" id="classic-modal-close">✕</button>
+                </div>
+            </div>
+            <div class="classic-modal-body" id="classic-modal-body">
+                <div>
+                    <h3 class="section-heading">Resumo Profissional</h3>
+                    <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6;">
+                        Profissional com sólida atuação combinando administração, atendimento ao cliente e operações digitais com design gráfico, edição e diagramação de livros. Experiência de home office desde 2021 com alta autonomia e organização. Domínio de CRM, ERP, PDV, Excel e plataformas de atendimento (Zendesk, Manychat e Zoho). Inglês avançado e formação contínua em UX/UI Design e desenvolvimento de sistemas web.
+                    </p>
+                </div>
+
+                <div class="classic-grid">
+                    <div>
+                        <h3 class="section-heading">Experiência Profissional</h3>
+                        
+                        <div class="timeline-item">
+                            <h4>Designer Gráfica Freelancer</h4>
+                            <div class="sub">02/2020 – Atual | Home Office</div>
+                            <p>Criação de logotipos, identidades visuais completas e materiais de marketing direto com clientes nacionais e internacionais.</p>
+                        </div>
+
+                        <div class="timeline-item">
+                            <h4>Editora, Revisora e Diagramadora de Livros</h4>
+                            <div class="sub">01/2021 – Atual | Home Office</div>
+                            <p>Edição, revisão e diagramação de livros completos utilizando InDesign, Word e Manuskript.</p>
+                        </div>
+
+                        <div class="timeline-item">
+                            <h4>Editora-chefe – Revista Drama Maniac</h4>
+                            <div class="sub">01/2021 – Atual</div>
+                            <p>Coordenação editorial geral e organização do fluxo de publicação e direção de arte.</p>
+                        </div>
+
+                        <div class="timeline-item">
+                            <h4>Assistente Administrativa – ECT (Correios)</h4>
+                            <div class="sub">04/2022 – 04/2023 | Pinheiros – ES</div>
+                            <p>Atendimento ao público, recebimento, expedição e controle de prazos e protocolos, controle de estoque e relatórios.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="section-heading">Formação & Certificações</h3>
+                        
+                        <div class="timeline-item">
+                            <h4>Graduação em Letras – Língua Inglesa e Literatura</h4>
+                            <div class="sub">UniCesumar | 2019 – 2023</div>
+                            <p>Domínio de linguística, comunicação escrita e fluência em inglês acadêmico e profissional.</p>
+                        </div>
+
+                        <div class="timeline-item">
+                            <h4>Tecnologia em Análise e Desenv. de Sistemas</h4>
+                            <div class="sub">Multivix | 02/2021 – 06/2023</div>
+                            <p>Estrutura de dados, programação web, banco de dados e engenharia de software.</p>
+                        </div>
+
+                        <h3 class="section-heading" style="margin-top: 20px;">Habilidades Chave</h3>
+                        <div class="skills-badges">
+                            <span class="skill-badge">Adobe InDesign</span>
+                            <span class="skill-badge">Photoshop & Illustrator</span>
+                            <span class="skill-badge">Figma & UX/UI</span>
+                            <span class="skill-badge">HTML5 / CSS3 / JavaScript</span>
+                            <span class="skill-badge">Three.js / WebGL</span>
+                            <span class="skill-badge">Zendesk & Zoho CRM</span>
+                            <span class="skill-badge">Manychat & Automação</span>
+                            <span class="skill-badge">Excel & Google Sheets</span>
+                            <span class="skill-badge">Inglês Avançado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Lightbox (Visualizador Editorial de Amostras) -->
+    <div class="lightbox-container" id="lightbox-container">
+        <div class="lightbox-box">
+            <div class="lightbox-header">
+                <div>
+                    <span class="drawer-index" id="lightbox-tag">AMOSTRA // 01</span>
+                    <h3 class="drawer-title" id="lightbox-title" style="font-size: 1.25rem; margin-top: 4px;">Amostra Visual</h3>
+                </div>
+                <button class="close-btn" id="lightbox-close">[ FECHAR &times; ]</button>
+            </div>
+            <div class="lightbox-body">
+                <div class="lightbox-image-wrap">
+                    <img id="lightbox-img" src="" alt="Amostra de Projeto">
+                </div>
+                <div class="lightbox-meta">
+                    <div class="lightbox-specs" id="lightbox-specs">ESPECIFICAÇÕES TÉCNICAS</div>
+                    <p class="lightbox-desc" id="lightbox-desc">Descrição da amostra e processo técnico editorial.</p>
+                    <div class="lightbox-actions" id="lightbox-actions">
+                        <!-- Injetado dinamicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Contato & Backend Conectado -->
+    <div class="contact-container" id="contact-container">
+        <div class="contact-box">
+            <div class="contact-header">
+                <div>
+                    <span class="drawer-index" id="contact-header-index">CONEXÃO // 01</span>
+                    <h3 class="drawer-title" id="contact-header-title" style="font-size: 1.25rem; margin-top: 4px;">Iniciar Conversa / Orçamento</h3>
+                </div>
+                <button class="close-btn" id="contact-close">[ FECHAR &times; ]</button>
+            </div>
+            <form class="contact-body" id="contact-form">
+                <div class="form-status" id="contact-status"></div>
+
+                <div class="form-group">
+                    <label class="form-label" for="contact-name" id="label-name">Nome / Empresa</label>
+                    <input type="text" id="contact-name" class="form-input" placeholder="Ex: Ana Silva ou Editora X" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="contact-email" id="label-email">E-mail de Contato</label>
+                    <input type="email" id="contact-email" class="form-input" placeholder="seu-email@dominio.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="contact-subject" id="label-subject">Serviço de Interesse</label>
+                    <select id="contact-subject" class="form-select">
+                        <option value="Diagramação de Livro / Editorial">Diagramação de Livro & Editorial (InDesign)</option>
+                        <option value="Desenvolvimento Web & UX/UI">Desenvolvimento Web & Experiências 3D / UX</option>
+                        <option value="Branding & Identidade Visual">Branding & Identidade Visual (Photoshop/Illustrator)</option>
+                        <option value="Operações & Atendimento CRM">Operações Remotas / Suporte CRM (Zendesk/Zoho/Manychat)</option>
+                        <option value="Tradução Inglês/Português">Tradução e Revisão (Inglês ⇄ Português)</option>
+                        <option value="Outro Assunto">Outro Assunto / Proposta Geral</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="contact-message" id="label-message">Mensagem / Escopo do Projeto</label>
+                    <textarea id="contact-message" class="form-textarea" placeholder="Descreva brevemente sua necessidade, prazo ou detalhes..." required></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 6px;">
+                    <button type="submit" class="entry-action-btn primary" id="contact-submit-btn" style="flex: 1; justify-content: center; padding: 11px;">
+                        <span id="contact-submit-text">Enviar Mensagem ✉</span>
+                    </button>
+                </div>
+
+                <div class="contact-quick-links">
+                    <span class="contact-quick-links-title" id="contact-channels-title">CANAIS DIRETOS ALTERNATIVOS</span>
+                    <div class="contact-channels">
+                        <a href="https://wa.me/5527997682682?text=Ol%C3%A1%20Heloisa!%20Vi%20seu%20portf%C3%B3lio%20e%20gostaria%20de%20conversar." target="_blank" rel="noopener noreferrer" class="entry-action-btn whatsapp">
+                            💬 WhatsApp (27) 99768-2682 ↗
+                        </a>
+                        <a href="mailto:heloisaoliveira@zohomail.com" class="entry-action-btn">
+                            ✉ heloisaoliveira@zohomail.com
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Three.js + OrbitControls via CDN -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // 1. CENA & RENDERER COM AMBIENTE COZY PASTEL (VERDE, ROSA, ROXO, KAWAII)
+        const container = document.getElementById('canvas-container');
+        const tooltip = document.getElementById('tooltip-3d');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x231834); // Fundo estúdio lilás/roxo aveludado
+        scene.fog = new THREE.FogExp2(0x231834, 0.025);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.25;
+        container.appendChild(renderer.domElement);
+
+        // 2. CÂMERA ISOMÉTRICA COM FOV BAIXO
+        const camera = new THREE.PerspectiveCamera(32, window.innerWidth / window.innerHeight, 0.1, 100);
+        const defaultCamPos = new THREE.Vector3(12, 10, 12);
+        const defaultTarget = new THREE.Vector3(0, 1.2, 0);
+
+        camera.position.copy(defaultCamPos);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.target.copy(defaultTarget);
+        controls.minDistance = 6;
+        controls.maxDistance = 22;
+        controls.maxPolarAngle = Math.PI / 2.05;
+        controls.minPolarAngle = Math.PI / 6;
+
+        let targetCamPos = defaultCamPos.clone();
+        let targetLookAt = defaultTarget.clone();
+        let isCameraTransitioning = false;
+
+        // 3. ILUMINAÇÃO ACOLHEDORA E PASTEL (VERDE, ROSA E ROXO)
+        const ambientLight = new THREE.AmbientLight(0xfff0f8, 1.85); // Luz difusa quente rosada
+        scene.add(ambientLight);
+
+        // Luz da janela (luz suave rosa pastel com sombras macias)
+        const moonLight = new THREE.DirectionalLight(0xf472b6, 1.4);
+        moonLight.position.set(-6, 9, 6);
+        moonLight.castShadow = true;
+        moonLight.shadow.mapSize.width = 2048;
+        moonLight.shadow.mapSize.height = 2048;
+        moonLight.shadow.bias = -0.0005;
+        scene.add(moonLight);
+
+        // Luz acolhedora do abajur amarelo pastel / lo-fi
+        const lampLight = new THREE.PointLight(0xfef08a, 24, 6, 1.8);
+        lampLight.position.set(1.1, 2.3, 0.3);
+        lampLight.castShadow = true;
+        lampLight.shadow.bias = -0.001;
+        scene.add(lampLight);
+
+        // Brilho do monitor (roxo/lilás aconchegante)
+        const monitorLight = new THREE.PointLight(0xc084fc, 14, 4.5, 2);
+        monitorLight.position.set(-0.3, 2.05, 0.4);
+        scene.add(monitorLight);
+
+        // Luz verde menta suave refletida da base do quarto
+        const mintLight = new THREE.PointLight(0x5eead4, 10, 6, 2);
+        mintLight.position.set(-1.5, 1.5, 1.5);
+        scene.add(mintLight);
+
+        // Backlight neon rosa do coração na parede
+        const heartGlow = new THREE.PointLight(0xf43f5e, 16, 5, 2);
+        heartGlow.position.set(0.5, 3.2, -3.1);
+        scene.add(heartGlow);
+
+        // 4. CONSTRUÇÃO DO DIORAMA ISOMÉTRICO (COZY KAWAII STUDIO)
+        const roomGroup = new THREE.Group();
+        scene.add(roomGroup);
+
+        // Paleta de Materiais Pastel:
+        const mintFloorMat = new THREE.MeshStandardMaterial({ color: 0xa7f3d0, roughness: 0.5, metalness: 0.05 });
+        const lilacWallMat = new THREE.MeshStandardMaterial({ color: 0xd8b4fe, roughness: 0.8 });
+        const pinkWallMat = new THREE.MeshStandardMaterial({ color: 0xfbcfe8, roughness: 0.8 });
+        const whiteCleanMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35 });
+        const pinkAccentMat = new THREE.MeshStandardMaterial({ color: 0xf472b6, roughness: 0.4 });
+        const lilacDrawerMat = new THREE.MeshStandardMaterial({ color: 0xe9d5ff, roughness: 0.4 });
+        const mintMat = new THREE.MeshStandardMaterial({ color: 0x6ee7b7, roughness: 0.4 });
+        const purpleMat = new THREE.MeshStandardMaterial({ color: 0xa855f7, roughness: 0.4 });
+
+        // 4.1. Piso (Verde Menta Pastel com Réguas de Madeira Claras)
+        const floorMesh = new THREE.Mesh(new THREE.BoxGeometry(7, 0.3, 7), mintFloorMat);
+        floorMesh.position.y = -0.15;
+        floorMesh.receiveShadow = true;
+        roomGroup.add(floorMesh);
+
+        // Tapete fofo em formato de Flor / Nuvem (Rosa & Lilás Pastel)
+        const rugGeo = new THREE.CylinderGeometry(1.9, 1.9, 0.02, 32);
+        const rug = new THREE.Mesh(rugGeo, new THREE.MeshStandardMaterial({ color: 0xf5d0fe, roughness: 0.9 }));
+        rug.position.set(0.2, 0.01, 0.6);
+        rug.scale.set(1.1, 1, 0.9);
+        rug.receiveShadow = true;
+        roomGroup.add(rug);
+
+        // Centro da flor do tapete (Amarelo Pastel)
+        const rugCenter = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.65, 0.025, 24), new THREE.MeshStandardMaterial({ color: 0xfef08a, roughness: 0.9 }));
+        rugCenter.position.set(0.2, 0.015, 0.6);
+        rugCenter.receiveShadow = true;
+        roomGroup.add(rugCenter);
+
+        // 4.2. Paredes do Quarto (Lilás + Rosa Pastel)
+        // Parede de trás (Lilás / Roxo Pastel)
+        const backWall = new THREE.Mesh(new THREE.BoxGeometry(7, 4.5, 0.25), lilacWallMat);
+        backWall.position.set(0, 2.1, -3.375);
+        backWall.receiveShadow = true;
+        roomGroup.add(backWall);
+
+        // Parede lateral esquerda (Rosa Pastel)
+        const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.25, 4.5, 7), pinkWallMat);
+        leftWall.position.set(-3.375, 2.1, 0);
+        leftWall.receiveShadow = true;
+        roomGroup.add(leftWall);
+
+        // Rodapés e Batentes em Branco Clean
+        const bbBack = new THREE.Mesh(new THREE.BoxGeometry(6.8, 0.16, 0.08), whiteCleanMat);
+        bbBack.position.set(0.1, 0.08, -3.21);
+        roomGroup.add(bbBack);
+
+        const bbLeft = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.16, 6.8), whiteCleanMat);
+        bbLeft.position.set(-3.21, 0.08, 0.1);
+        roomGroup.add(bbLeft);
+
+        // Janela fofa com moldura branca e vista estrelada rosa/roxo
+        const windowFrame = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2.2, 2.0), whiteCleanMat);
+        windowFrame.position.set(-3.35, 2.5, 0.6);
+        roomGroup.add(windowFrame);
+
+        // Vidro com céu estrelado suave em degradê
+        const skyCanvas = document.createElement('canvas');
+        skyCanvas.width = 256;
+        skyCanvas.height = 256;
+        const sCtx = skyCanvas.getContext('2d');
+        const sGrad = sCtx.createLinearGradient(0, 0, 0, 256);
+        sGrad.addColorStop(0, '#701a75'); // Magenta/Roxo noturno
+        sGrad.addColorStop(0.5, '#c084fc'); // Lilás
+        sGrad.addColorStop(1, '#fbcfe8'); // Rosa amanhecer
+        sCtx.fillStyle = sGrad;
+        sCtx.fillRect(0, 0, 256, 256);
+        sCtx.fillStyle = '#ffffff';
+        for (let i = 0; i < 40; i++) {
+            const sx = Math.random() * 256;
+            const sy = Math.random() * 256;
+            sCtx.fillRect(sx, sy, Math.random() > 0.7 ? 3 : 2, Math.random() > 0.7 ? 3 : 2);
+        }
+        const skyTexture = new THREE.CanvasTexture(skyCanvas);
+        const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 2.0), new THREE.MeshBasicMaterial({ map: skyTexture }));
+        windowGlass.position.set(-3.2, 2.5, 0.6);
+        windowGlass.rotation.y = Math.PI / 2;
+        roomGroup.add(windowGlass);
+
+        // 4.3. Painel de LED em Formato de Coração na Parede (Como em My Dream Bedroom)
+        const heartGroup = new THREE.Group();
+        heartGroup.position.set(0.5, 3.2, -3.22);
+        roomGroup.add(heartGroup);
+
+        const heartShape = new THREE.Shape();
+        const hx = 0, hy = 0;
+        heartShape.moveTo(hx + 0.25, hy + 0.25);
+        heartShape.bezierCurveTo(hx + 0.25, hy + 0.25, hx + 0.2, hy, hx, hy);
+        heartShape.bezierCurveTo(hx - 0.3, hy, hx - 0.3, hy + 0.35, hx - 0.3, hy + 0.35);
+        heartShape.bezierCurveTo(hx - 0.3, hy + 0.55, hx - 0.1, hy + 0.77, hx + 0.25, hy + 0.95);
+        heartShape.bezierCurveTo(hx + 0.6, hy + 0.77, hx + 0.8, hy + 0.55, hx + 0.8, hy + 0.35);
+        heartShape.bezierCurveTo(hx + 0.8, hy + 0.35, hx + 0.8, hy, hx + 0.5, hy);
+        heartShape.bezierCurveTo(hx + 0.35, hy, hx + 0.25, hy + 0.25, hx + 0.25, hy + 0.25);
+
+        const heartGeo = new THREE.ExtrudeGeometry(heartShape, { depth: 0.04, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.02, bevelThickness: 0.02 });
+        const heartMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e });
+        const heartMesh = new THREE.Mesh(heartGeo, heartMat);
+        heartMesh.scale.set(0.9, -0.9, 0.9);
+        heartMesh.position.set(-0.25, 0.5, 0);
+        heartGroup.add(heartMesh);
+
+        // 4.4. Mesa Branca Clean com Gaveteiro Lateral Lilás (Estilo Setup Gamer Kawaii)
+        const deskGroup = new THREE.Group();
+        deskGroup.position.set(0, 0, -1.2);
+        roomGroup.add(deskGroup);
+
+        // Tampo da mesa branco limpo
+        const deskTop = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.1, 1.6), whiteCleanMat);
+        deskTop.position.set(0, 1.4, 0);
+        deskTop.castShadow = true;
+        deskTop.receiveShadow = true;
+        deskGroup.add(deskTop);
+
+        // Pernas brancas clean
+        [[-1.65, 0.7, -0.65], [-1.65, 0.7, 0.65]].forEach(pos => {
+            const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.4, 16), whiteCleanMat);
+            leg.position.set(...pos);
+            leg.castShadow = true;
+            deskGroup.add(leg);
+        });
+
+        // Gaveteiro lateral fofo embutido no lado direito (Lilás Pastel com puxadores brancos)
+        const cabinet = new THREE.Mesh(new THREE.BoxGeometry(0.85, 1.35, 1.4), lilacDrawerMat);
+        cabinet.position.set(1.3, 0.68, 0);
+        cabinet.castShadow = true;
+        cabinet.receiveShadow = true;
+        deskGroup.add(cabinet);
+
+        // 3 frentes de gaveta com puxadores
+        for (let g = 0; g < 3; g++) {
+            const dFace = new THREE.Mesh(new THREE.BoxGeometry(0.81, 0.38, 0.03), pinkWallMat);
+            dFace.position.set(1.3, 0.28 + (g * 0.42), 0.71);
+            deskGroup.add(dFace);
+
+            const dHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.16, 16), whiteCleanMat);
+            dHandle.rotation.z = Math.PI / 2;
+            dHandle.position.set(1.3, 0.28 + (g * 0.42), 0.74);
+            deskGroup.add(dHandle);
+        }
+
+        // 5. OBJETOS INTERATIVOS
+        const interactiveObjects = [];
+
+        function registerInteractive(mesh, data) {
+            mesh.userData = data;
+            interactiveObjects.push(mesh);
+        }
+
+        // 5.1. MONITOR KAWAII COM ORELHINHAS DE GATINHO (TECH & UX/UI)
+        const monitorGroup = new THREE.Group();
+        monitorGroup.position.set(-0.3, 1.45, -0.2);
+        deskGroup.add(monitorGroup);
+
+        const standBase = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.02, 0.3), whiteCleanMat);
+        standBase.position.y = 0.01;
+        monitorGroup.add(standBase);
+
+        const standPole = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.45), whiteCleanMat);
+        standPole.position.set(0, 0.22, -0.05);
+        monitorGroup.add(standPole);
+
+        // Carcaça branca clean do monitor
+        const screenBody = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.85, 0.06), whiteCleanMat);
+        screenBody.position.set(0, 0.55, 0);
+        screenBody.castShadow = true;
+        monitorGroup.add(screenBody);
+
+        // Orelhinhas de Gatinho Fofas no Topo do Monitor (Kawaii Detail)
+        const earGeo = new THREE.ConeGeometry(0.12, 0.22, 4);
+        const earMat = new THREE.MeshStandardMaterial({ color: 0xf472b6, roughness: 0.3 });
+        const earLeft = new THREE.Mesh(earGeo, earMat);
+        earLeft.position.set(-0.55, 1.05, 0);
+        earLeft.rotation.z = 0.2;
+        monitorGroup.add(earLeft);
+
+        const earRight = new THREE.Mesh(earGeo, earMat);
+        earRight.position.set(0.55, 1.05, 0);
+        earRight.rotation.z = -0.2;
+        monitorGroup.add(earRight);
+
+        // Tela com Wallpaper Pastel Kawaii Dinâmico (Bilingue)
+        const screenCanvas = document.createElement('canvas');
+        screenCanvas.width = 512;
+        screenCanvas.height = 256;
+        const ctx = screenCanvas.getContext('2d');
+        const screenTexture = new THREE.CanvasTexture(screenCanvas);
+
+        function updateScreenTexture(lang = 'pt') {
+            const scGrad = ctx.createLinearGradient(0, 0, 512, 256);
+            scGrad.addColorStop(0, '#581c87'); // Roxo
+            scGrad.addColorStop(0.5, '#be185d'); // Rosa
+            scGrad.addColorStop(1, '#0f766e'); // Menta
+            ctx.fillStyle = scGrad;
+            ctx.fillRect(0, 0, 512, 256);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 26px "Space Grotesk", sans-serif';
+            ctx.fillText('🌸 Heloisa Cunha | Studio ✨', 30, 52);
+            ctx.font = '17px monospace';
+            ctx.fillStyle = '#fbcfe8';
+            if (lang === 'en') {
+                ctx.fillText('const role = "Editorial Designer & Dev";', 30, 92);
+                ctx.fillText('status: "Home Office Cozy Setup 🤍";', 30, 126);
+                ctx.fillStyle = '#a7f3d0';
+                ctx.fillText('♥ Mint Green · Pastel Pink · Lilac', 30, 168);
+                ctx.fillStyle = '#fef08a';
+                ctx.fillText('★ Three.js · UX/UI · InDesign Books', 30, 206);
+            } else {
+                ctx.fillText('const role = "Editorial Designer & Dev";', 30, 92);
+                ctx.fillText('status: "Home Office Cozy Setup 🤍";', 30, 126);
+                ctx.fillStyle = '#a7f3d0';
+                ctx.fillText('♥ Verde Menta · Rosa Pastel · Roxo', 30, 168);
+                ctx.fillStyle = '#fef08a';
+                ctx.fillText('★ Three.js · UX/UI · InDesign Books', 30, 206);
+            }
+            screenTexture.needsUpdate = true;
+        }
+        updateScreenTexture('pt');
+        const screenDisplay = new THREE.Mesh(new THREE.PlaneGeometry(1.54, 0.79), new THREE.MeshBasicMaterial({ map: screenTexture }));
+        screenDisplay.position.set(0, 0.55, 0.032);
+        monitorGroup.add(screenDisplay);
+
+        registerInteractive(screenDisplay, {
+            type: 'tech',
+            tooltip: '💻 Projetos Tech & UX/UI (Clique para abrir)',
+            focusPos: new THREE.Vector3(-0.3, 1.8, 1.8),
+            focusTarget: new THREE.Vector3(-0.3, 1.9, -1.2)
+        });
+
+        // Deskmat Longo Rosa Pastel
+        const mousePad = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.01, 0.65), pinkAccentMat);
+        mousePad.position.set(-0.2, 1.455, 0.3);
+        mousePad.receiveShadow = true;
+        deskGroup.add(mousePad);
+
+        // Teclado Branco Clean
+        const keyboard = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.02, 0.25), whiteCleanMat);
+        keyboard.position.set(-0.35, 1.465, 0.32);
+        keyboard.castShadow = true;
+        deskGroup.add(keyboard);
+
+        // Mouse Branco
+        const mouse = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.03, 0.16), whiteCleanMat);
+        mouse.position.set(0.25, 1.465, 0.32);
+        mouse.castShadow = true;
+        deskGroup.add(mouse);
+
+        // 5.2. LIVROS EDITORIAIS & REVISTA DRAMA MANIAC (VERDE MENTA, ROSA E ROXO)
+        const booksGroup = new THREE.Group();
+        booksGroup.position.set(0.95, 1.45, -0.35);
+        deskGroup.add(booksGroup);
+
+        const bookColors = [0x6ee7b7, 0xf472b6, 0xa855f7];
+        bookColors.forEach((color, idx) => {
+            const b = new THREE.Mesh(
+                new THREE.BoxGeometry(0.42, 0.05, 0.55),
+                new THREE.MeshStandardMaterial({ color: color, roughness: 0.5 })
+            );
+            b.position.set(0, 0.025 + (idx * 0.055), 0);
+            b.rotation.y = (idx - 1) * 0.12;
+            b.castShadow = true;
+            b.receiveShadow = true;
+            booksGroup.add(b);
+
+            registerInteractive(b, {
+                type: 'editorial',
+                tooltip: '📚 Design Editorial & Diagramação (Clique para abrir)',
+                focusPos: new THREE.Vector3(1.2, 2.0, 0.8),
+                focusTarget: new THREE.Vector3(0.95, 1.5, -1.5)
+            });
+        });
+
+        // 5.3. CADERNO / AGENDA DE OPERAÇÕES (VERDE MENTA COM CANETA ROSA)
+        const plannerGroup = new THREE.Group();
+        plannerGroup.position.set(-1.15, 1.455, 0.25);
+        deskGroup.add(plannerGroup);
+
+        const plannerMesh = new THREE.Mesh(
+            new THREE.BoxGeometry(0.38, 0.02, 0.5),
+            mintMat
+        );
+        plannerMesh.rotation.y = 0.25;
+        plannerMesh.castShadow = true;
+        plannerGroup.add(plannerMesh);
+
+        const penMesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.012, 0.012, 0.3, 12),
+            pinkAccentMat
+        );
+        penMesh.position.set(0.24, 0.01, 0);
+        penMesh.rotation.z = Math.PI / 2;
+        penMesh.rotation.y = 0.25;
+        plannerGroup.add(penMesh);
+
+        registerInteractive(plannerMesh, {
+            type: 'operations',
+            tooltip: '📋 Operações, CRM & Atendimento (Clique para abrir)',
+            focusPos: new THREE.Vector3(-1.1, 2.0, 1.4),
+            focusTarget: new THREE.Vector3(-1.15, 1.45, -0.95)
+        });
+
+        // 5.4. LUMINÁRIA DE MESA (AMARELO PASTEL FOFO)
+        const lampGroup = new THREE.Group();
+        lampGroup.position.set(1.1, 1.45, 0.1);
+        deskGroup.add(lampGroup);
+
+        const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.03, 16), whiteCleanMat);
+        lampGroup.add(lampBase);
+
+        const lampArm1 = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.45), whiteCleanMat);
+        lampArm1.position.set(0, 0.22, 0);
+        lampArm1.rotation.z = -0.3;
+        lampGroup.add(lampArm1);
+
+        const lampArm2 = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.45), whiteCleanMat);
+        lampArm2.position.set(-0.08, 0.55, 0);
+        lampArm2.rotation.z = 0.4;
+        lampGroup.add(lampArm2);
+
+        const lampHead = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.22, 16, 1, true), new THREE.MeshStandardMaterial({ color: 0xfef08a, roughness: 0.3 }));
+        lampHead.position.set(-0.2, 0.72, 0);
+        lampHead.rotation.z = -1.1;
+        lampHead.castShadow = true;
+        lampGroup.add(lampHead);
+
+        const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), new THREE.MeshBasicMaterial({ color: 0xffedd5 }));
+        bulb.position.set(-0.2, 0.72, 0);
+        lampGroup.add(bulb);
+
+        registerInteractive(lampHead, { type: 'lamp', tooltip: '💡 Luminária (Clique para ligar/desligar)' });
+        registerInteractive(bulb, { type: 'lamp', tooltip: '💡 Luminária (Clique para ligar/desligar)' });
+
+        // Xícara de Café Rosa Pastel com Café
+        const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.07, 0.16, 24), pinkWallMat);
+        mug.position.set(0.65, 1.53, 0.35);
+        mug.castShadow = true;
+        deskGroup.add(mug);
+
+        const coffee = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.02, 16), new THREE.MeshBasicMaterial({ color: 0x4a2810 }));
+        coffee.position.set(0.65, 1.6, 0.35);
+        deskGroup.add(coffee);
+
+        // Vaso de Suculenta (Verde Menta & Amarelo Pastel)
+        const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.09, 0.18, 16), new THREE.MeshStandardMaterial({ color: 0xfef08a, roughness: 0.6 }));
+        pot.position.set(-1.3, 1.54, -0.4);
+        deskGroup.add(pot);
+
+        const leaves = new THREE.Mesh(new THREE.DodecahedronGeometry(0.14), new THREE.MeshStandardMaterial({ color: 0x34d399, roughness: 0.5 }));
+        leaves.position.set(-1.3, 1.68, -0.4);
+        deskGroup.add(leaves);
+
+        // 5.5. CADEIRA GAMER KAWAII (BRANCA COM ROSA PASTEL & ALMOFADA FOFA)
+        const chairGroup = new THREE.Group();
+        chairGroup.position.set(0, 0, 0.2);
+        roomGroup.add(chairGroup);
+
+        const seat = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.1, 0.85), pinkAccentMat);
+        seat.position.y = 0.88;
+        chairGroup.add(seat);
+
+        // Almofadinha branca fofa
+        const cushion = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.04, 16), whiteCleanMat);
+        cushion.position.set(0, 0.94, 0);
+        chairGroup.add(cushion);
+
+        const backrest = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.95, 0.08), pinkAccentMat);
+        backrest.position.set(0, 1.45, 0.38);
+        backrest.rotation.x = 0.06;
+        chairGroup.add(backrest);
+
+        const backrestTrim = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.12, 0.09), whiteCleanMat);
+        backrestTrim.position.set(0, 1.9, 0.39);
+        chairGroup.add(backrestTrim);
+
+        const chairStem = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.8, 16), whiteCleanMat);
+        chairStem.position.y = 0.42;
+        chairGroup.add(chairStem);
+
+        const chairBase = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.04, 5), whiteCleanMat);
+        chairBase.position.y = 0.05;
+        chairGroup.add(chairBase);
+
+        // Estante na parede de trás
+        const shelf = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 0.4), whiteCleanMat);
+        shelf.position.set(0.2, 3.2, -3.15);
+        roomGroup.add(shelf);
+
+        const shelfColors = [0x6ee7b7, 0xf472b6, 0xa855f7, 0xfef08a, 0x38bdf8, 0xfbcfe8];
+        for (let i = 0; i < 6; i++) {
+            const shelfBook = new THREE.Mesh(
+                new THREE.BoxGeometry(0.08, 0.4 + (i % 3) * 0.05, 0.3),
+                new THREE.MeshStandardMaterial({ color: shelfColors[i] })
+            );
+            shelfBook.position.set(-0.7 + (i * 0.14), 3.44, -3.15);
+            roomGroup.add(shelfBook);
+            registerInteractive(shelfBook, {
+                type: 'editorial',
+                tooltip: '📚 Design Editorial & Livros (Clique para abrir)',
+                focusPos: new THREE.Vector3(0.5, 3.5, -0.8),
+                focusTarget: new THREE.Vector3(0.2, 3.2, -3.15)
+            });
+        }
+
+        // ==========================================================
+        // 5.5. MASCOTE 3D FOFO: GATINHO MIMI DORMINDO NA PRATELEIRA
+        // ==========================================================
+        const catGroup = new THREE.Group();
+        catGroup.position.set(0.75, 3.23, -3.15);
+        roomGroup.add(catGroup);
+
+        const catCreamMat = new THREE.MeshStandardMaterial({ color: 0xfffcf5, roughness: 0.6 });
+        const catPinkMat = new THREE.MeshStandardMaterial({ color: 0xfbcfe8, roughness: 0.5 });
+        const catCollarMat = new THREE.MeshStandardMaterial({ color: 0xa855f7, roughness: 0.3 });
+        const catBellMat = new THREE.MeshStandardMaterial({ color: 0xfef08a, roughness: 0.2, metalness: 0.8 });
+
+        // Almofada do gatinho
+        const catBed = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.35, 0.05, 16), new THREE.MeshStandardMaterial({ color: 0xecfdf5, roughness: 0.8 }));
+        catBed.position.y = 0.025;
+        catBed.receiveShadow = true;
+        catGroup.add(catBed);
+
+        // Corpo do gatinho enroladinho
+        const catBody = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 16), catCreamMat);
+        catBody.scale.set(1.2, 0.75, 0.95);
+        catBody.position.set(0, 0.15, 0);
+        catBody.castShadow = true;
+        catGroup.add(catBody);
+
+        // Cabeça
+        const catHead = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), catCreamMat);
+        catHead.position.set(0.16, 0.22, 0.08);
+        catHead.castShadow = true;
+        catGroup.add(catHead);
+
+        // Orelhinhas pontudas
+        const earShape = new THREE.ConeGeometry(0.05, 0.09, 4);
+        const earL = new THREE.Mesh(earShape, catPinkMat);
+        earL.position.set(0.22, 0.32, 0.13);
+        earL.rotation.set(0.2, 0, -0.3);
+        catGroup.add(earL);
+
+        const earR = new THREE.Mesh(earShape, catPinkMat);
+        earR.position.set(0.12, 0.33, 0.02);
+        earR.rotation.set(-0.2, 0, 0.2);
+        catGroup.add(earR);
+
+        // Coleirinha lilás com sininho dourado
+        const catCollar = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.02, 8, 16), catCollarMat);
+        catCollar.position.set(0.14, 0.17, 0.06);
+        catCollar.rotation.x = Math.PI / 2;
+        catGroup.add(catCollar);
+
+        const catBell = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), catBellMat);
+        catBell.position.set(0.25, 0.16, 0.09);
+        catGroup.add(catBell);
+
+        // Cauda fofa curvada
+        const catTail = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.035, 0.28, 8), catCreamMat);
+        catTail.position.set(-0.16, 0.12, 0.15);
+        catTail.rotation.set(0.6, 0.2, 1.2);
+        catGroup.add(catTail);
+
+        registerInteractive(catBody, {
+            type: 'cat',
+            tooltip: '🐾 Mimi (Mascote do Estúdio): "Zzz..." (Clique para interagir!)'
+        });
+        registerInteractive(catHead, {
+            type: 'cat',
+            tooltip: '🐾 Mimi (Mascote do Estúdio): "Zzz..." (Clique para interagir!)'
+        });
+
+        // Quadro Drama Maniac
+        const frame = new THREE.Mesh(new THREE.BoxGeometry(0.04, 1.4, 1.0), whiteCleanMat);
+        frame.position.set(-3.22, 2.7, -1.8);
+        roomGroup.add(frame);
+
+        const posterCanvas = document.createElement('canvas');
+        posterCanvas.width = 256;
+        posterCanvas.height = 360;
+        const pCtx = posterCanvas.getContext('2d');
+        const pGrad = pCtx.createLinearGradient(0, 0, 256, 360);
+        pGrad.addColorStop(0, '#f472b6');
+        pGrad.addColorStop(0.5, '#c084fc');
+        pGrad.addColorStop(1, '#a855f7');
+        pCtx.fillStyle = pGrad;
+        pCtx.fillRect(0, 0, 256, 360);
+        pCtx.fillStyle = '#ffffff';
+        pCtx.font = 'bold 34px sans-serif';
+        pCtx.fillText('DRAMA', 40, 160);
+        pCtx.fillText('MANIAC', 40, 200);
+        pCtx.font = '18px sans-serif';
+        pCtx.fillStyle = 'rgba(255,255,255,0.9)';
+        pCtx.fillText('🌸 Editorial Issue', 40, 235);
+
+        const posterTexture = new THREE.CanvasTexture(posterCanvas);
+        const poster = new THREE.Mesh(new THREE.PlaneGeometry(0.94, 1.34), new THREE.MeshBasicMaterial({ map: posterTexture }));
+        poster.position.set(-3.19, 2.7, -1.8);
+        poster.rotation.y = Math.PI / 2;
+        roomGroup.add(poster);
+
+        registerInteractive(poster, {
+            type: 'editorial',
+            tooltip: '🎨 Revista Drama Maniac (Clique para abrir)',
+            focusPos: new THREE.Vector3(-1.2, 2.7, -1.8),
+            focusTarget: new THREE.Vector3(-3.2, 2.7, -1.8)
+        });
+
+        // ==========================================================
+        // 6. EFEITOS CINEMATOGRÁFICOS: POEIRA DE LUZ & VAPOR DO CAFÉ
+        // ==========================================================
+        // 6.1. Partículas de poeira dourada flutuante (Dust Motes)
+        const dustCount = 75;
+        const dustGeometry = new THREE.BufferGeometry();
+        const dustPositions = new Float32Array(dustCount * 3);
+
+        for (let i = 0; i < dustCount * 3; i += 3) {
+            dustPositions[i] = (Math.random() - 0.5) * 5;
+            dustPositions[i + 1] = 1.2 + Math.random() * 2.5;
+            dustPositions[i + 2] = (Math.random() - 0.5) * 5;
+        }
+
+        dustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+        const dustMaterial = new THREE.PointsMaterial({
+            color: 0xfde047,
+            size: 0.05,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+        const dustParticles = new THREE.Points(dustGeometry, dustMaterial);
+        scene.add(dustParticles);
+
+        // 6.2. Vapor de Café (Coffee Steam)
+        const steamCount = 18;
+        const steamGeo = new THREE.BufferGeometry();
+        const steamPositions = new Float32Array(steamCount * 3);
+        const steamAlphas = new Float32Array(steamCount);
+
+        for (let i = 0; i < steamCount; i++) {
+            steamPositions[i * 3] = 0.65 + (Math.random() - 0.5) * 0.05;
+            steamPositions[i * 3 + 1] = 1.62 + Math.random() * 0.3;
+            steamPositions[i * 3 + 2] = -0.85 + (Math.random() - 0.5) * 0.05;
+            steamAlphas[i] = Math.random();
+        }
+        steamGeo.setAttribute('position', new THREE.BufferAttribute(steamPositions, 3));
+        const steamMaterial = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 0.045,
+            transparent: true,
+            opacity: 0.35,
+            blending: THREE.AdditiveBlending
+        });
+        const steamParticles = new THREE.Points(steamGeo, steamMaterial);
+        scene.add(steamParticles);
+
+        // ==========================================================
+        // 7. PINS FLUTUANTES (PROJEÇÃO 3D PARA 2D NA TELA)
+        // ==========================================================
+        const pinTech = document.getElementById('pin-tech');
+        const pinEditorial = document.getElementById('pin-editorial');
+        const pinOps = document.getElementById('pin-ops');
+
+        const hotspotTargets = [
+            { el: pinTech, pos: new THREE.Vector3(-0.3, 2.5, -1.4), type: 'tech' },
+            { el: pinEditorial, pos: new THREE.Vector3(0.95, 1.8, -1.5), type: 'editorial' },
+            { el: pinOps, pos: new THREE.Vector3(-1.15, 1.8, -0.95), type: 'operations' }
+        ];
+
+        function updateHotspotPins() {
+            const widthHalf = window.innerWidth / 2;
+            const heightHalf = window.innerHeight / 2;
+
+            hotspotTargets.forEach(h => {
+                const screenPos = h.pos.clone().project(camera);
+                // Se o objeto estiver atrás da câmera
+                if (screenPos.z > 1) {
+                    h.el.style.display = 'none';
+                    return;
+                }
+                h.el.style.display = 'flex';
+                const x = (screenPos.x * widthHalf) + widthHalf;
+                const y = -(screenPos.y * heightHalf) + heightHalf;
+                h.el.style.left = `${x}px`;
+                h.el.style.top = `${y}px`;
+            });
+        }
+
+        hotspotTargets.forEach(h => {
+            h.el.addEventListener('click', () => {
+                const targetObj = interactiveObjects.find(obj => obj.userData && obj.userData.type === h.type);
+                if (targetObj) {
+                    focusCamera(targetObj.userData.focusPos, targetObj.userData.focusTarget);
+                    openDrawer(h.type);
+                }
+            });
+        });
+
+        // ==========================================================
+        // 8. RAYCASTER & INTERATIVIDADE
+        // ==========================================================
+        const raycaster = new THREE.Raycaster();
+        const mouseCoord = new THREE.Vector2();
+        let hoveredObject = null;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseCoord.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseCoord.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouseCoord, camera);
+            const intersects = raycaster.intersectObjects(interactiveObjects, true);
+
+            if (intersects.length > 0) {
+                const hit = intersects[0].object;
+                if (hit !== hoveredObject) {
+                    if (hoveredObject && hoveredObject.material && hoveredObject.material.emissive) {
+                        hoveredObject.material.emissive.setHex(hoveredObject._origEmissive || 0x000000);
+                    }
+                    hoveredObject = hit;
+                    if (hit.material && hit.material.emissive) {
+                        if (hit._origEmissive === undefined) hit._origEmissive = hit.material.emissive.getHex();
+                        hit.material.emissive.setHex(0x1e293b);
+                    }
+                    document.body.style.cursor = 'pointer';
+                    tooltip.style.display = 'block';
+                    tooltip.innerText = hit.userData.tooltip || 'Clique para interagir';
+                }
+                tooltip.style.left = `${e.clientX}px`;
+                tooltip.style.top = `${e.clientY}px`;
+            } else {
+                if (hoveredObject) {
+                    if (hoveredObject.material && hoveredObject.material.emissive) {
+                        hoveredObject.material.emissive.setHex(hoveredObject._origEmissive || 0x000000);
+                    }
+                    hoveredObject = null;
+                    document.body.style.cursor = 'default';
+                    tooltip.style.display = 'none';
+                }
+            }
+        });
+
+        // Alternar Luz da Luminária
+        let lampOn = true;
+        function toggleLamp() {
+            lampOn = !lampOn;
+            lampLight.visible = lampOn;
+            bulb.material.color.setHex(lampOn ? 0xffedd5 : 0x475569);
+            const btn = document.getElementById('btn-lamp-toggle');
+            if (btn) btn.style.color = lampOn ? '#f59e0b' : '#94a3b8';
+        }
+        document.getElementById('btn-lamp-toggle').addEventListener('click', toggleLamp);
+
+        // ==========================================================
+        // 8. MOTOR DE ÁUDIO SINTETIZADO & SFX TÁTIL (WEB AUDIO API)
+        // ==========================================================
+        let audioCtx = null;
+        let isAudioPlaying = false;
+        let ambientGain = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Som de "Thock" tátil de teclado mecânico pastel
+        function playClickSound(freq = 680, duration = 0.035) {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+
+                osc.type = 'triangle';
+                const now = audioCtx.currentTime;
+                osc.frequency.setValueAtTime(freq, now);
+                osc.frequency.exponentialRampToValueAtTime(140, now + duration);
+
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(750, now);
+                filter.Q.setValueAtTime(2.5, now);
+
+                gain.gain.setValueAtTime(0.04, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + duration);
+            } catch (e) {}
+        }
+
+        // Som de Miau fofinho do Gatinho Mimi
+        function playCatPurr() {
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(540, now);
+                osc.frequency.exponentialRampToValueAtTime(820, now + 0.16);
+                osc.frequency.exponentialRampToValueAtTime(460, now + 0.42);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.12, now + 0.09);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.42);
+            } catch (e) {}
+        }
+
+        // Chuva suave / Som Lo-Fi de fundo
+        function toggleSound() {
+            initAudio();
+
+            if (!ambientGain) {
+                const bufferSize = audioCtx.sampleRate * 2;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+                for (let i = 0; i < bufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    b0 = 0.99886 * b0 + white * 0.0555179;
+                    b1 = 0.99332 * b1 + white * 0.0750759;
+                    b2 = 0.96900 * b2 + white * 0.1538520;
+                    b3 = 0.86650 * b3 + white * 0.3104856;
+                    b4 = 0.55000 * b4 + white * 0.5329522;
+                    b5 = -0.7616 * b5 - white * 0.0168980;
+                    data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.025;
+                    b6 = white * 0.115926;
+                }
+
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                noise.loop = true;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(450, audioCtx.currentTime);
+
+                ambientGain = audioCtx.createGain();
+                ambientGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+
+                noise.connect(filter);
+                filter.connect(ambientGain);
+                ambientGain.connect(audioCtx.destination);
+                noise.start(0);
+            }
+
+            isAudioPlaying = !isAudioPlaying;
+            if (ambientGain) {
+                ambientGain.gain.setTargetAtTime(isAudioPlaying ? 0.25 : 0, audioCtx.currentTime, 0.1);
+            }
+
+            const icon = document.getElementById('sound-icon');
+            const txt = document.getElementById('sound-text');
+            if (icon) icon.innerText = isAudioPlaying ? '🔊' : '🔇';
+            if (txt) txt.innerText = isAudioPlaying ? 'Lo-Fi Ativo' : (currentLang === 'en' ? 'Audio' : 'Áudio');
+            playClickSound(800);
+        }
+
+        document.getElementById('btn-sound-toggle').addEventListener('click', toggleSound);
+
+        // ==========================================================
+        // SISTEMA DIA ☀️ / NOITE 🌙 PASTEL
+        // ==========================================================
+        let isDayMode = false;
+        const btnThemeToggle = document.getElementById('btn-theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
+
+        function toggleDayNight() {
+            isDayMode = !isDayMode;
+            playClickSound(isDayMode ? 850 : 550);
+
+            if (isDayMode) {
+                themeIcon.innerText = '☀️';
+                themeText.innerText = currentLang === 'en' ? 'Day' : 'Dia';
+                scene.background.set(0xfdf2f8); // Céu pastel matinal pêssego/rosa
+                scene.fog.color.set(0xfdf2f8);
+                moonLight.color.set(0xffedd5); // Luz solar dourada quente
+                moonLight.intensity = 2.4;
+                ambientLight.intensity = 2.3;
+                ambientLight.color.set(0xfff7ed);
+            } else {
+                themeIcon.innerText = '🌙';
+                themeText.innerText = currentLang === 'en' ? 'Night' : 'Noite';
+                scene.background.set(0x231834); // Céu noturno lilás aveludado
+                scene.fog.color.set(0x231834);
+                moonLight.color.set(0xf472b6); // Luz noturna suave
+                moonLight.intensity = 1.4;
+                ambientLight.intensity = 1.85;
+                ambientLight.color.set(0xfff0f8);
+            }
+        }
+
+        btnThemeToggle.addEventListener('click', toggleDayNight);
+
+        // Ativa som de tecla para botões interativos
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.hud-btn') || e.target.closest('.close-btn') || e.target.closest('.entry-action-btn') || e.target.closest('.hotspot-pin')) {
+                playClickSound();
+            }
+        });
+
+        // ==========================================================
+        // 9. ARQUITETURA DE DADOS BILÍNGUE & CONTEÚDO EDITORIAL
+        // ==========================================================
+        const portfolioData = {
+            pt: {
+                tech: {
+                    index: '01',
+                    title: 'Desenvolvimento & UX/UI',
+                    subtitle: 'Arquitetura de sistemas · Programação web · Experiências 3D',
+                    projects: [
+                        {
+                            tag: 'Tecnologia / 3D Interativo',
+                            period: '2024 – ATUAL',
+                            title: 'Portfólio 3D Imersivo (Este Website)',
+                            desc: 'Experiência tridimensional construída com Three.js, shaders, renderização com ACESFilmic Tone Mapping e câmera isométrica personalizada. Desenvolvido para apresentar minha trajetória profissional de forma memorável.',
+                            skills: ['Three.js', 'WebGL', 'JavaScript ES6+', 'HTML5 / CSS3', 'OrbitControls'],
+                            serviceId: 'Desenvolvimento Web & UX/UI',
+                            whatsappMsg: 'Olá Heloisa! Gostei do seu portfólio 3D e gostaria de conversar sobre um projeto front-end.',
+                            sample: {
+                                image: 'Exploring the art of isometric office design with this vibrant setup_Which corner of our isometric office room inspires you the most_ #pixbake #Officelnspo #IsometricDesign #Pixbake.jpeg',
+                                tag: '3D // TECH',
+                                title: 'Cenografia 3D Isométrica & Iluminação Realista',
+                                desc: 'Modelagem paramétrica, sombreamento suave PCFSoftShadowMap, partículas dinâmicas de poeira e vapor, e texturização em tempo real via Canvas 2D.',
+                                specs: 'Three.js r160 · WebGL · ACESFilmic · OrbitControls · Performance 60 FPS'
+                            }
+                        },
+                        {
+                            tag: 'Formação em Sistemas',
+                            period: '2021 – 2023',
+                            title: 'Tecnologia em Análise e Desenvolvimento de Sistemas',
+                            desc: 'Multivix. Formação com ênfase em arquitetura de software, programação para internet, modelagem de banco de dados SQL e engenharia de requisitos.',
+                            skills: ['ADS', 'APIs REST', 'Bases de Dados', 'Git', 'Lógica de Programação'],
+                            serviceId: 'Desenvolvimento Web & UX/UI',
+                            whatsappMsg: 'Olá Heloisa! Gostaria de conversar sobre uma oportunidade na área de desenvolvimento de sistemas.',
+                            sample: {
+                                image: 'Home Office Desk Student Study Table Space Saving PC Workstation Desk Modern Bedroom Furniture.jpeg',
+                                tag: 'DEV // FORMAÇÃO',
+                                title: 'Ambiente de Estudo & Engenharia de Software',
+                                desc: 'Projetos práticos de desenvolvimento web com consumo de APIs REST, estruturação de fluxos orientados a objetos e versionamento com Git.',
+                                specs: 'Multivix ADS · REST APIs · SQL · Git Flow · Clean Code'
+                            }
+                        },
+                        {
+                            tag: 'UX/UI & Prototipagem',
+                            period: 'PRODUÇÃO CONTÍNUA',
+                            title: 'Design de Interfaces & Pesquisa de Usuários',
+                            desc: 'Construção de fluxos de navegação, personas, wireframes e protótipos de alta fidelidade no Figma prontos para implementação front-end com consistência visual.',
+                            skills: ['Figma', 'Wireframing', 'Prototipagem', 'Design System', 'Acessibilidade'],
+                            serviceId: 'Desenvolvimento Web & UX/UI',
+                            whatsappMsg: 'Olá Heloisa! Gostaria de um orçamento para design de interfaces e prototipagem no Figma.',
+                            sample: {
+                                image: 'Calm and atmospheric workspace 🤍✨.jpeg',
+                                tag: 'UX/UI // FIGMA',
+                                title: 'Design System & Interfaces Centradas no Usuário',
+                                desc: 'Sistemas de design consistentes com bibliotecas de componentes reutilizáveis, grids tipográficos e protótipos navegáveis com microinterações.',
+                                specs: 'Figma · Auto Layout · Design Tokens · Testes de Usabilidade'
+                            }
+                        }
+                    ]
+                },
+                editorial: {
+                    index: '02',
+                    title: 'Design Gráfico & Editorial',
+                    subtitle: 'Coordenação editorial · Diagramação de livros · Identidade de marca',
+                    projects: [
+                        {
+                            tag: 'Coordenação Editorial',
+                            period: '01/2021 – ATUAL',
+                            title: 'Editora-chefe — Revista Drama Maniac',
+                            desc: 'Coordenação editorial geral, curadoria de pautas e matérias, organização do fluxo de publicação e direção de arte da revista digital periódica.',
+                            skills: ['Direção Editorial', 'Curadoria', 'InDesign', 'Gestão de Prazos', 'Editoração'],
+                            serviceId: 'Diagramação de Livro / Editorial',
+                            whatsappMsg: 'Olá Heloisa! Vi seu trabalho como editora-chefe na Revista Drama Maniac e gostaria de solicitar um projeto editorial.',
+                            sample: {
+                                image: 'My Dream bedroom.jpeg',
+                                tag: 'EDITORIAL // REVISTA',
+                                title: 'Direção de Arte e Curadoria — Revista Drama Maniac',
+                                desc: 'Estruturação de grade editorial, identidade gráfica consistente, hierarquia de títulos e diagramação de matérias digitais.',
+                                specs: 'Adobe InDesign CC · Curadoria Visual · Paleta Editorial · Publicação Mensal'
+                            }
+                        },
+                        {
+                            tag: 'Diagramação de Livros',
+                            period: '01/2021 – ATUAL',
+                            title: 'Editora e Diagramadora Freelancer',
+                            desc: 'Diagramação e revisão profissional de livros completos. Padronização tipográfica, grid editorial rigoroso, exportação para impressão gráfica e formato e-book.',
+                            skills: ['Adobe InDesign', 'Manuskript', 'Tipografia', 'Design Editorial', 'Revisão'],
+                            serviceId: 'Diagramação de Livro / Editorial',
+                            whatsappMsg: 'Olá Heloisa! Tenho um livro para diagramar e gostaria de solicitar um orçamento.',
+                            sample: {
+                                image: '_ (1).jpeg',
+                                tag: 'LIVROS // DIAGRAMAÇÃO',
+                                title: 'Diagramação Editorial Profissional de Livro',
+                                desc: 'Composição de páginas internas com grid tipográfico refinado, abertura de capítulos decorada, fólios e preparação de arquivos para gráfica.',
+                                specs: 'Adobe InDesign · Manuskript · CMYK 300 DPI · Tipografia Editorial · EPUB'
+                            }
+                        },
+                        {
+                            tag: 'Branding & Identidade',
+                            period: '02/2020 – ATUAL',
+                            title: 'Designer Gráfica Freelancer Autônoma',
+                            desc: 'Criação de logotipos, identidades visuais completas, peças publicitárias, panfletos, flyers e materiais de marketing para diversos segmentos de mercado.',
+                            skills: ['Adobe Photoshop', 'Illustrator', 'Adobe Express', 'Canva', 'Figma'],
+                            serviceId: 'Branding & Identidade Visual',
+                            whatsappMsg: 'Olá Heloisa! Gostaria de um orçamento para criação de identidade visual / marca.',
+                            sample: {
+                                image: '_.jpeg',
+                                tag: 'BRANDING // IDENTIDADE',
+                                title: 'Identidade Visual & Direção de Arte',
+                                desc: 'Criação de marcas autênticas com manuais de uso, paletas cromáticas harmônicas e aplicações promocionais digitais e impressas.',
+                                specs: 'Adobe Illustrator & Photoshop · Vetores · Manual de Identidade Visual'
+                            }
+                        }
+                    ]
+                },
+                operations: {
+                    index: '03',
+                    title: 'Operações, CRM & Atendimento',
+                    subtitle: 'Processos corporativos · Plataformas digitais · Fluência em idiomas',
+                    projects: [
+                        {
+                            tag: 'Gestão Administrativa',
+                            period: '04/2022 – 04/2023',
+                            title: 'Assistente Administrativa — Correios (ECT)',
+                            desc: 'Atendimento ao público, distribuição de senhas, expedição e arquivamento de documentos com controle rigoroso de prazos, metas de entrega e gestão física de estoque.',
+                            skills: ['Rotinas Administrativas', 'Controle de Prazos', 'Gestão de Estoque', 'Relatórios'],
+                            serviceId: 'Operações & Atendimento CRM',
+                            whatsappMsg: 'Olá Heloisa! Gostaria de conversar sobre uma oportunidade em operações corporativas.',
+                            sample: {
+                                image: 'Home Office Desk Student Study Table Space Saving PC Workstation Desk Modern Bedroom Furniture.jpeg',
+                                tag: 'ECT // OPERAÇÕES',
+                                title: 'Rigor Operacional & Gestão de Documentos',
+                                desc: 'Cumprimento de acordos de nível de serviço (SLA), controle rigoroso de fluxo postal e atendimento com empatia e agilidade.',
+                                specs: 'Correios ECT · Gestão de SLA · Atendimento Presencial & Corporativo'
+                            }
+                        },
+                        {
+                            tag: 'Operações Digitais',
+                            period: 'EXPERIÊNCIA PRÁTICA',
+                            title: 'Plataformas de CRM & Atendimento ao Cliente',
+                            desc: 'Atendimento e suporte através de plataformas como Zendesk, Zoho CRM e Manychat (automação), fluxos de e-mail (SMTP), sistemas ERP e PDV, e Excel avançado.',
+                            skills: ['Zendesk', 'Zoho CRM', 'Manychat', 'Excel Avançado', 'Emissão NF-e'],
+                            serviceId: 'Operações & Atendimento CRM',
+                            whatsappMsg: 'Olá Heloisa! Gostaria de suporte para configuração ou operação de Zendesk / Zoho CRM / Manychat.',
+                            sample: {
+                                image: 'Calm and atmospheric workspace 🤍✨.jpeg',
+                                tag: 'CRM // SUPORTE',
+                                title: 'Fluxos de Atendimento Omnichannel & Automações',
+                                desc: 'Configuração de gatilhos e macros no Zendesk, automação de fluxos de chat no Manychat e gestão de pipelines de clientes no Zoho CRM.',
+                                specs: 'Zendesk Suite · Zoho CRM · Manychat Chatbot · Excel Avançado · NF-e'
+                            }
+                        },
+                        {
+                            tag: 'Idiomas & Tradução',
+                            period: '2012 – ATUAL',
+                            title: 'Tradutora Freelancer & Formação em Letras',
+                            desc: 'Graduação em Letras (Língua Inglesa e Literatura - UniCesumar). Atuação em traduções técnicas e literárias para clientes nacionais e internacionais (Freelancer.com e ProZ.com).',
+                            skills: ['Inglês Avançado / Fluente', 'Português Nativo', 'Tradução', 'Comunicação'],
+                            serviceId: 'Tradução Inglês/Português',
+                            whatsappMsg: 'Olá Heloisa! Gostaria de um orçamento para tradução / versão de texto em inglês.',
+                            sample: {
+                                image: '_ (1).jpeg',
+                                tag: 'LETRAS // TRADUÇÃO',
+                                title: 'Tradução Literária e Técnica Inglês ⇄ Português',
+                                desc: 'Revisão textual rigorosa, localização cultural e tradução com fidelidade estilística para plataformas globais.',
+                                specs: 'B.A. Letras Inglês · ProZ.com · Freelancer.com · Localização de Conteúdo'
+                            }
+                        }
+                    ]
+                }
+            },
+            en: {
+                tech: {
+                    index: '01',
+                    title: 'Development & UX/UI',
+                    subtitle: 'Systems architecture · Web programming · 3D interactive experiences',
+                    projects: [
+                        {
+                            tag: 'Technology / 3D Interactive',
+                            period: '2024 – PRESENT',
+                            title: 'Immersive 3D Portfolio (This Website)',
+                            desc: 'Interactive 3D workspace engineered with Three.js, custom lighting shaders, ACESFilmic tone mapping, and isometric projection camera. Built to showcase my dual creative and technical skillset.',
+                            skills: ['Three.js', 'WebGL', 'JavaScript ES6+', 'HTML5 / CSS3', 'OrbitControls'],
+                            serviceId: 'Desenvolvimento Web & UX/UI',
+                            whatsappMsg: 'Hello Heloisa! I saw your 3D portfolio and would like to discuss a front-end project.',
+                            sample: {
+                                image: 'Exploring the art of isometric office design with this vibrant setup_Which corner of our isometric office room inspires you the most_ #pixbake #Officelnspo #IsometricDesign #Pixbake.jpeg',
+                                tag: '3D // TECH',
+                                title: 'Isometric 3D Scenography & Atmospheric Lighting',
+                                desc: 'Parametric modeling, PCF soft shadow maps, floating dust motes and coffee steam particles, and real-time screen canvas texturing.',
+                                specs: 'Three.js r160 · WebGL · ACESFilmic · OrbitControls · 60 FPS Performance'
+                            }
+                        },
+                        {
+                            tag: 'Computer Science Education',
+                            period: '2021 – 2023',
+                            title: 'Associate Degree in Systems Analysis & Development',
+                            desc: 'Multivix. Specialized training in software architecture, web programming, relational SQL databases, requirements engineering, and modern Git workflows.',
+                            skills: ['ADS', 'REST APIs', 'SQL Databases', 'Git', 'Program Logic'],
+                            serviceId: 'Desenvolvimento Web & UX/UI',
+                            whatsappMsg: 'Hello Heloisa! I would like to discuss a software development opportunity.',
+                            sample: {
+                                image: 'Home Office Desk Student Study Table Space Saving PC Workstation Desk Modern Bedroom Furniture.jpeg',
+                                tag: 'DEV // EDUCATION',
+                                title: 'Software Engineering & Web Development Practice',
+                                desc: 'Practical projects utilizing RESTful APIs, OOP paradigms, database normalization, and robust Git branching strategies.',
+                                specs: 'Multivix ADS · REST APIs · SQL · Git Flow · Clean Code'
+                            }
+                        },
+                        {
+                            tag: 'UX/UI & Prototyping',
+                            period: 'CONTINUOUS PRODUCTION',
+                            title: 'User Interface Design & User Research',
+                            desc: 'Crafting user journeys, personas, wireframes, and high-fidelity interactive Figma prototypes ready for clean, responsive front-end implementation.',
+                            skills: ['Figma', 'Wireframing', 'Prototyping', 'Design Systems', 'Accessibility'],
+                            serviceId: 'Desenvolvimento Web & UX/UI',
+                            whatsappMsg: 'Hello Heloisa! I would like a quote for UI design and Figma prototyping.',
+                            sample: {
+                                image: 'Calm and atmospheric workspace 🤍✨.jpeg',
+                                tag: 'UX/UI // FIGMA',
+                                title: 'Design Systems & User-Centered Interfaces',
+                                desc: 'Scalable design systems with reusable component libraries, rigorous typographical grids, and clickable interactive prototypes.',
+                                specs: 'Figma · Auto Layout · Design Tokens · Usability Testing'
+                            }
+                        }
+                    ]
+                },
+                editorial: {
+                    index: '02',
+                    title: 'Graphic & Editorial Design',
+                    subtitle: 'Editorial direction · Book typesetting · Brand identities',
+                    projects: [
+                        {
+                            tag: 'Editorial Direction',
+                            period: '01/2021 – PRESENT',
+                            title: 'Chief Editor — Drama Maniac Magazine',
+                            desc: 'Overall editorial management, article curation, publication timeline orchestration, and art direction for this digital magazine publication.',
+                            skills: ['Editorial Direction', 'Curatorship', 'InDesign', 'SLA Management', 'Publishing'],
+                            serviceId: 'Diagramação de Livro / Editorial',
+                            whatsappMsg: 'Hello Heloisa! I saw your work with Drama Maniac Magazine and want to discuss an editorial project.',
+                            sample: {
+                                image: 'My Dream bedroom.jpeg',
+                                tag: 'EDITORIAL // MAGAZINE',
+                                title: 'Art Direction & Curatorship — Drama Maniac',
+                                desc: 'Establishing editorial grids, consistent brand voice, title hierarchies, and digital magazine layout composition.',
+                                specs: 'Adobe InDesign CC · Visual Direction · Editorial Palette · Monthly Releases'
+                            }
+                        },
+                        {
+                            tag: 'Book Typesetting',
+                            period: '01/2021 – PRESENT',
+                            title: 'Freelance Book Designer & Typesetter',
+                            desc: 'End-to-end typesetting and proofreading for complete books. Typographic standardization, strict baseline grids, and pre-press output for print and e-books.',
+                            skills: ['Adobe InDesign', 'Manuskript', 'Typography', 'Book Design', 'Proofreading'],
+                            serviceId: 'Diagramação de Livro / Editorial',
+                            whatsappMsg: 'Hello Heloisa! I have a book project and would like to request a typesetting quote.',
+                            sample: {
+                                image: '_ (1).jpeg',
+                                tag: 'BOOKS // TYPESETTING',
+                                title: 'Professional Book Typesetting & Interior Layout',
+                                desc: 'Interior page composition with elegant typographic hierarchy, ornamental chapter openers, running headers, and print-ready PDF files.',
+                                specs: 'Adobe InDesign · Manuskript · 300 DPI CMYK · Editorial Typography · EPUB'
+                            }
+                        },
+                        {
+                            tag: 'Branding & Identity',
+                            period: '02/2020 – PRESENT',
+                            title: 'Freelance Graphic Designer',
+                            desc: 'Creation of distinctive logotypes, complete visual identity systems, marketing collateral, and digital promotional assets across diverse industries.',
+                            skills: ['Adobe Photoshop', 'Illustrator', 'Adobe Express', 'Canva', 'Figma'],
+                            serviceId: 'Branding & Identidade Visual',
+                            whatsappMsg: 'Hello Heloisa! I would like a quote for a visual identity / brand project.',
+                            sample: {
+                                image: '_.jpeg',
+                                tag: 'BRANDING // IDENTITY',
+                                title: 'Visual Identity & Art Direction',
+                                desc: 'Crafting brand marks with brand style guides, harmonious color palettes, and digital/print promotional assets.',
+                                specs: 'Adobe Illustrator & Photoshop · Vector Assets · Brand Guidelines'
+                            }
+                        }
+                    ]
+                },
+                operations: {
+                    index: '03',
+                    title: 'Operations, CRM & Support',
+                    subtitle: 'Business workflows · Digital CRM platforms · Multi-language fluency',
+                    projects: [
+                        {
+                            tag: 'Administrative Management',
+                            period: '04/2022 – 04/2023',
+                            title: 'Administrative Assistant — Correios (Postal Service)',
+                            desc: 'Customer service, ticketing, document archiving, and strict SLA compliance for delivery targets and physical inventory oversight.',
+                            skills: ['Administrative Procedures', 'SLA Tracking', 'Inventory Control', 'Reporting'],
+                            serviceId: 'Operações & Atendimento CRM',
+                            whatsappMsg: 'Hello Heloisa! I would like to discuss an opportunity in corporate operations.',
+                            sample: {
+                                image: 'Home Office Desk Student Study Table Space Saving PC Workstation Desk Modern Bedroom Furniture.jpeg',
+                                tag: 'OPERATIONS // SLA',
+                                title: 'Process Discipline & Records Management',
+                                desc: 'Managing customer requests, inventory logistics, and postal tracking while meeting strict operational targets.',
+                                specs: 'Correios ECT · SLA Management · Customer Facing & Documentation'
+                            }
+                        },
+                        {
+                            tag: 'Digital Operations',
+                            period: 'PRACTICAL EXPERIENCE',
+                            title: 'CRM Platforms & Customer Success',
+                            desc: 'Customer onboarding and support via Zendesk, Zoho CRM, and Manychat automation chatbots, SMTP email workflows, ERP/POS systems, and advanced Excel.',
+                            skills: ['Zendesk', 'Zoho CRM', 'Manychat', 'Advanced Excel', 'Invoicing'],
+                            serviceId: 'Operações & Atendimento CRM',
+                            whatsappMsg: 'Hello Heloisa! I need assistance configuring or operating Zendesk / Zoho CRM / Manychat.',
+                            sample: {
+                                image: 'Calm and atmospheric workspace 🤍✨.jpeg',
+                                tag: 'CRM // SUPPORT',
+                                title: 'Omnichannel Customer Support & Automated Workflows',
+                                desc: 'Trigger and macro setups in Zendesk, chatbot conversational flows in Manychat, and customer pipeline management in Zoho CRM.',
+                                specs: 'Zendesk Suite · Zoho CRM · Manychat Chatbot · Advanced Excel'
+                            }
+                        },
+                        {
+                            tag: 'Languages & Translation',
+                            period: '2012 – PRESENT',
+                            title: 'Freelance Translator & B.A. in English',
+                            desc: 'B.A. in English Language & Literature (UniCesumar). Providing technical, literary, and corporate translations for domestic and international clients (Freelancer.com and ProZ.com).',
+                            skills: ['Fluent English', 'Native Portuguese', 'Translation', 'Communication'],
+                            serviceId: 'Tradução Inglês/Português',
+                            whatsappMsg: 'Hello Heloisa! I would like a quote for an English/Portuguese translation project.',
+                            sample: {
+                                image: '_ (1).jpeg',
+                                tag: 'LANGUAGES // TRANSLATION',
+                                title: 'Literary & Technical Translation English ⇄ Portuguese',
+                                desc: 'Meticulous proofreading, cultural localization, and tone-faithful translations for international publication and software.',
+                                specs: 'B.A. in English · ProZ.com · Freelancer.com · Content Localization'
+                            }
+                        }
+                    ]
+                }
+            }
+        };
+
+        // UI Translations Dictionary
+        const i18n = {
+            pt: {
+                tagline: 'Designer Editorial &bull; UX/UI &bull; Operações Remotas',
+                sound: 'Áudio',
+                light: '💡 Luz',
+                classic: '📋 Modo Clássico',
+                contact: 'Contato',
+                hint: '<span>Ambiente Isométrico Interativo:</span> Clique no <span class="highlight">Monitor</span>, nos <span class="highlight">Livros</span> ou no <span class="highlight">Caderno</span>',
+                pinTech: 'TECH &bull; UX/UI',
+                pinEditorial: 'EDITORIAL &bull; DESIGN',
+                pinOps: 'OPERAÇÕES &bull; CRM',
+                sampleBtn: '👁 Ver Amostra ↗',
+                whatsappBtn: '💬 WhatsApp',
+                quoteBtn: '✉ Orçamento',
+                closeBtn: '[ FECHAR &times; ]',
+                lightboxTag: 'AMOSTRA // 01',
+                lightboxTitle: 'Amostra Visual',
+                contactHeaderIndex: 'CONEXÃO // 01',
+                contactHeaderTitle: 'Iniciar Conversa / Orçamento',
+                labelName: 'Nome / Empresa',
+                labelEmail: 'E-mail de Contato',
+                labelSubject: 'Serviço de Interesse',
+                labelMessage: 'Mensagem / Escopo do Projeto',
+                contactSubmit: 'Enviar Mensagem ✉',
+                contactSubmitting: 'Enviando Mensagem ao Servidor...',
+                contactSuccess: '✓ Mensagem recebida pelo backend com sucesso! Responderei em breve.',
+                contactErrorFallback: '⚠️ Servidor local offline no momento. Abrindo seu cliente de e-mail e WhatsApp...'
+            },
+            en: {
+                tagline: 'Editorial Designer &bull; UX/UI &bull; Remote Operations',
+                sound: 'Audio',
+                light: '💡 Light',
+                classic: '📋 Classic Resume',
+                contact: 'Contact',
+                hint: '<span>Interactive Isometric Room:</span> Click on <span class="highlight">Monitor</span>, <span class="highlight">Books</span> or <span class="highlight">Planner</span>',
+                pinTech: 'TECH &bull; UX/UI',
+                pinEditorial: 'EDITORIAL &bull; DESIGN',
+                pinOps: 'OPERATIONS &bull; CRM',
+                sampleBtn: '👁 View Sample ↗',
+                whatsappBtn: '💬 WhatsApp',
+                quoteBtn: '✉ Request Quote',
+                closeBtn: '[ CLOSE &times; ]',
+                lightboxTag: 'SAMPLE // 01',
+                lightboxTitle: 'Visual Sample',
+                contactHeaderIndex: 'CONNECT // 01',
+                contactHeaderTitle: 'Start Conversation / Request Quote',
+                labelName: 'Name / Company',
+                labelEmail: 'Contact E-mail',
+                labelSubject: 'Service of Interest',
+                labelMessage: 'Message / Project Scope',
+                contactSubmit: 'Send Message ✉',
+                contactSubmitting: 'Submitting Message to Backend...',
+                contactSuccess: '✓ Message received by backend successfully! I will be in touch shortly.',
+                contactErrorFallback: '⚠️ Local backend currently offline. Opening direct mail client and WhatsApp...'
+            }
+        };
+
+        // State Management
+        let currentLang = localStorage.getItem('heloisa_portfolio_lang') || 'pt';
+        let activeCategoryKey = null;
+
+        // Elements
+        const drawer = document.getElementById('drawer');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+        const drawerIndex = document.getElementById('drawer-index');
+        const drawerTitle = document.getElementById('drawer-title');
+        const drawerSubtitle = document.getElementById('drawer-subtitle');
+        const drawerContent = document.getElementById('drawer-content');
+        const drawerClose = document.getElementById('drawer-close');
+
+        // Lightbox Elements
+        const lightboxContainer = document.getElementById('lightbox-container');
+        const lightboxClose = document.getElementById('lightbox-close');
+        const lightboxTag = document.getElementById('lightbox-tag');
+        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxSpecs = document.getElementById('lightbox-specs');
+        const lightboxDesc = document.getElementById('lightbox-desc');
+        const lightboxActions = document.getElementById('lightbox-actions');
+
+        // Contact Modal Elements
+        const contactContainer = document.getElementById('contact-container');
+        const contactClose = document.getElementById('contact-close');
+        const btnContactOpen = document.getElementById('btn-contact-open');
+        const contactForm = document.getElementById('contact-form');
+        const contactStatus = document.getElementById('contact-status');
+        const contactSubjectSelect = document.getElementById('contact-subject');
+        const contactSubmitBtn = document.getElementById('contact-submit-btn');
+        const contactSubmitText = document.getElementById('contact-submit-text');
+
+        // Language Toggle Elements
+        const btnLangToggle = document.getElementById('btn-lang-toggle');
+        const langIndicator = document.getElementById('lang-indicator');
+
+        // Classic Modal
+        const classicModal = document.getElementById('classic-modal-container');
+        const btnClassic = document.getElementById('btn-classic-mode');
+        const btnClassicClose = document.getElementById('classic-modal-close');
+        const classicModalBody = document.getElementById('classic-modal-body');
+
+        // RENDER CLASSIC RESUME (BILINGUAL)
+        function renderClassicModal(lang) {
+            if (!classicModalBody) return;
+            if (lang === 'en') {
+                classicModalBody.innerHTML = `
+                    <div>
+                        <h3 class="section-heading">Professional Summary</h3>
+                        <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6;">
+                            Multidisciplinary professional bridging corporate administration, customer operations, and CRM with graphic design, editorial book typesetting, and modern web development. Remote worker since 2021 with exceptional self-organization and discipline. Highly skilled in CRM, ERP, POS, advanced Excel, and omnichannel support platforms (Zendesk, Manychat, Zoho). Fluent in English with ongoing specialization in UX/UI Design and front-end 3D web applications (Three.js/WebGL).
+                        </p>
+                    </div>
+
+                    <div class="classic-grid">
+                        <div>
+                            <h3 class="section-heading">Work Experience</h3>
+                            
+                            <div class="timeline-item">
+                                <h4>Freelance Graphic Designer</h4>
+                                <div class="sub">02/2020 – Present | Remote / Home Office</div>
+                                <p>Creation of logotypes, brand identity systems, promotional collateral, and visual assets for domestic and international clients.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <h4>Book Editor, Proofreader & Typesetter</h4>
+                                <div class="sub">01/2021 – Present | Remote / Home Office</div>
+                                <p>Complete book interior layout, editorial design, typographic grid styling, and print/digital pre-press preparation using InDesign and Manuskript.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <h4>Chief Editor — Drama Maniac Magazine</h4>
+                                <div class="sub">01/2021 – Present | Remote / Home Office</div>
+                                <p>Editorial leadership, content curation, publication schedule oversight, and art direction for this monthly digital magazine.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <h4>Administrative Operations Assistant — Correios (ECT)</h4>
+                                <div class="sub">04/2022 – 04/2023 | Pinheiros, ES</div>
+                                <p>Customer assistance, ticketing, document archiving, strict SLA fulfillment, and postal inventory administration.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <h4>Freelance English ⇄ Portuguese Translator</h4>
+                                <div class="sub">2012 – Present | Remote (ProZ.com / Freelancer.com)</div>
+                                <p>Literary and technical translation, localization, and proofreading for international clients.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="section-heading">Education</h3>
+                            
+                            <div class="timeline-item">
+                                <h4>B.A. in English Language & Literature</h4>
+                                <div class="sub">UniCesumar | 02/2017 – 12/2021</div>
+                                <p>Linguistics, written communication, and academic and professional English fluency.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <h4>Associate Degree in Systems Analysis & Development</h4>
+                                <div class="sub">Multivix | 02/2021 – 06/2023</div>
+                                <p>Data structures, web engineering, relational databases, REST APIs, and software architecture.</p>
+                            </div>
+
+                            <h3 class="section-heading" style="margin-top: 20px;">Core Competencies</h3>
+                            <div class="skills-badges">
+                                <span class="skill-badge">Adobe InDesign</span>
+                                <span class="skill-badge">Photoshop & Illustrator</span>
+                                <span class="skill-badge">Figma & UX/UI</span>
+                                <span class="skill-badge">HTML5 / CSS3 / JavaScript</span>
+                                <span class="skill-badge">Three.js / WebGL</span>
+                                <span class="skill-badge">Zendesk & Zoho CRM</span>
+                                <span class="skill-badge">Manychat & Automation</span>
+                                <span class="skill-badge">Advanced Excel</span>
+                                <span class="skill-badge">Fluent English</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                classicModalBody.innerHTML = `
+                    <div>
+                        <h3 class="section-heading">Resumo Profissional</h3>
+                        <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6;">
+                            Profissional com sólida atuação combinando administração, atendimento ao cliente e operações digitais com design gráfico, edição e diagramação de livros. Experiência de home office desde 2021 com alta autonomia e organização. Domínio de CRM, ERP, PDV, Excel e plataformas de atendimento (Zendesk, Manychat e Zoho). Inglês avançado e formação contínua em UX/UI Design e desenvolvimento de sistemas web.
+                        </p>
+                    </div>
+
+                    <div class="classic-grid">
+                        <div>
+                            <h3 class="section-heading">Experiência Profissional</h3>
+                            
+                            <div class="timeline-item">
+                                <h4>Designer Gráfica Freelancer</h4>
+                                <div class="sub">02/2020 – Atual | Home Office</div>
+                                <p>Criação de logotipos, identidades visuais completas e materiais de marketing direto com clientes nacionais e internacionais.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <h4>Editora, Revisora e Diagramadora de Livros</h4>
+                                <div class="sub">01/2021 – Atual | Home Office</div>
+                                <p>Edição, revisão e diagramação de livros completos utilizando InDesign, Word e Manuskript.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <h4>Editora-chefe — Revista Drama Maniac</h4>
+                                <div class="sub">01/2021 – Atual | Home Office</div>
+                                <p>Coordenação editorial geral, curadoria de matérias, organização de publicações periódicas e direção de arte da revista digital.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <h4>Assistente Administrativa — Correios (ECT)</h4>
+                                <div class="sub">04/2022 – 04/2023 | Pinheiros, ES</div>
+                                <p>Atendimento ao público, distribuição de senhas, expedição e arquivamento de documentos com controle rigoroso de prazos e estoque.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <h4>Tradutora Freelancer Inglês ⇄ Português</h4>
+                                <div class="sub">2012 – Atual | Freelancer.com / ProZ.com</div>
+                                <p>Traduções técnicas e literárias para clientes nacionais e internacionais com precisão estilística.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="section-heading">Formação Acadêmica</h3>
+                            
+                            <div class="timeline-item">
+                                <h4>Licenciatura em Letras (Língua Inglesa)</h4>
+                                <div class="sub">UniCesumar | 02/2017 – 12/2021</div>
+                                <p>Domínio de linguística, comunicação escrita e fluência em inglês acadêmico e profissional.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <h4>Tecnologia em Análise e Desenv. de Sistemas</h4>
+                                <div class="sub">Multivix | 02/2021 – 06/2023</div>
+                                <p>Estrutura de dados, programação web, banco de dados e engenharia de software.</p>
+                            </div>
+
+                            <h3 class="section-heading" style="margin-top: 20px;">Habilidades Chave</h3>
+                            <div class="skills-badges">
+                                <span class="skill-badge">Adobe InDesign</span>
+                                <span class="skill-badge">Photoshop & Illustrator</span>
+                                <span class="skill-badge">Figma & UX/UI</span>
+                                <span class="skill-badge">HTML5 / CSS3 / JavaScript</span>
+                                <span class="skill-badge">Three.js / WebGL</span>
+                                <span class="skill-badge">Zendesk & Zoho CRM</span>
+                                <span class="skill-badge">Manychat & Automação</span>
+                                <span class="skill-badge">Excel & Google Sheets</span>
+                                <span class="skill-badge">Inglês Avançado</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // SET LANGUAGE
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('heloisa_portfolio_lang', lang);
+
+            const dict = i18n[lang] || i18n.pt;
+
+            // Header & badges
+            langIndicator.innerText = lang.toUpperCase();
+            document.getElementById('brand-tagline').innerHTML = dict.tagline;
+            document.getElementById('sound-text').innerText = dict.sound;
+            document.getElementById('lamp-text').innerText = dict.light;
+            document.getElementById('classic-text').innerText = dict.classic;
+            document.getElementById('contact-text').innerText = dict.contact;
+            document.getElementById('controls-hint-text').innerHTML = dict.hint;
+
+            // Pins
+            document.getElementById('pin-tech-label').innerHTML = dict.pinTech;
+            document.getElementById('pin-editorial-label').innerHTML = dict.pinEditorial;
+            document.getElementById('pin-ops-label').innerHTML = dict.pinOps;
+
+            // Contact Form Labels
+            document.getElementById('contact-header-index').innerText = dict.contactHeaderIndex;
+            document.getElementById('contact-header-title').innerText = dict.contactHeaderTitle;
+            document.getElementById('label-name').innerText = dict.labelName;
+            document.getElementById('label-email').innerText = dict.labelEmail;
+            document.getElementById('label-subject').innerText = dict.labelSubject;
+            document.getElementById('label-message').innerText = dict.labelMessage;
+            document.getElementById('contact-submit-text').innerText = dict.contactSubmit;
+
+            // Update 3D screen texture
+            updateScreenTexture(lang);
+
+            // Re-render Classic Modal
+            renderClassicModal(lang);
+
+            // Re-render Drawer if open
+            if (activeCategoryKey && drawer.classList.contains('active')) {
+                openDrawer(activeCategoryKey);
+            }
+        }
+
+        btnLangToggle.addEventListener('click', () => {
+            const nextLang = currentLang === 'pt' ? 'en' : 'pt';
+            setLanguage(nextLang);
+        });
+
+        // LIGHTBOX VIEWER
+        function openLightbox(sample, categoryKey) {
+            if (!sample) return;
+            lightboxTag.innerText = sample.tag || 'PORTFOLIO // SAMPLE';
+            lightboxTitle.innerText = sample.title || 'Amostra de Projeto';
+            lightboxImg.src = sample.image;
+            lightboxImg.alt = sample.title;
+            lightboxSpecs.innerText = sample.specs || '';
+            lightboxDesc.innerText = sample.desc || '';
+
+            const waText = encodeURIComponent(`Olá Heloisa! Vi a amostra "${sample.title}" no seu portfólio e gostaria de conversar.`);
+            const waUrl = `https://wa.me/5527997682682?text=${waText}`;
+
+            const t = i18n[currentLang] || i18n.pt;
+
+            lightboxActions.innerHTML = `
+                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="entry-action-btn whatsapp">
+                    💬 ${t.whatsappBtn} ↗
+                </a>
+                <button class="entry-action-btn primary" onclick="openContactModal('${sample.serviceId || ''}')">
+                    ✉ ${t.quoteBtn} ↗
+                </button>
+            `;
+
+            lightboxContainer.classList.add('active');
+        }
+
+        function closeLightbox() {
+            lightboxContainer.classList.remove('active');
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightboxContainer.addEventListener('click', (e) => {
+            if (e.target === lightboxContainer) closeLightbox();
+        });
+
+        // CONTACT MODAL & BACKEND LOGIC
+        window.openContactModal = function(serviceId = '') {
+            if (serviceId) {
+                for (let i = 0; i < contactSubjectSelect.options.length; i++) {
+                    if (contactSubjectSelect.options[i].value.toLowerCase().includes(serviceId.toLowerCase())) {
+                        contactSubjectSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            contactStatus.className = 'form-status';
+            contactStatus.style.display = 'none';
+            contactContainer.classList.add('active');
+        };
+
+        function closeContactModal() {
+            contactContainer.classList.remove('active');
+        }
+
+        btnContactOpen.addEventListener('click', () => {
+            window.openContactModal();
+        });
+
+        contactClose.addEventListener('click', closeContactModal);
+        contactContainer.addEventListener('click', (e) => {
+            if (e.target === contactContainer) closeContactModal();
+        });
+
+        // Form Submit Handler (Sends to local python backend /api/contact)
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const t = i18n[currentLang] || i18n.pt;
+            const name = document.getElementById('contact-name').value.trim();
+            const email = document.getElementById('contact-email').value.trim();
+            const subject = contactSubjectSelect.value;
+            const message = document.getElementById('contact-message').value.trim();
+
+            contactSubmitBtn.disabled = true;
+            contactSubmitText.innerText = t.contactSubmitting;
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, subject, message, lang: currentLang })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    contactStatus.className = 'form-status success';
+                    contactStatus.innerText = data.message || t.contactSuccess;
+                    contactForm.reset();
+                } else {
+                    throw new Error('Servidor retornou erro.');
+                }
+            } catch (err) {
+                // Fallback graceful: opens direct mailto and provides direct WhatsApp
+                contactStatus.className = 'form-status error';
+                contactStatus.innerText = t.contactErrorFallback;
+
+                const mailSubject = encodeURIComponent(`[Contato Portfólio] ${subject} - ${name}`);
+                const mailBody = encodeURIComponent(`Nome: ${name}\nE-mail: ${email}\nServiço: ${subject}\n\nMensagem:\n${message}`);
+                window.open(`mailto:heloisaoliveira@zohomail.com?subject=${mailSubject}&body=${mailBody}`, '_blank');
+            } finally {
+                contactSubmitBtn.disabled = false;
+                contactSubmitText.innerText = t.contactSubmit;
+            }
+        });
+
+        // OPEN DRAWER WITH ACTION BUTTONS
+        function openDrawer(categoryKey) {
+            activeCategoryKey = categoryKey;
+            const langData = portfolioData[currentLang] || portfolioData.pt;
+            const data = langData[categoryKey];
+            if (!data) return;
+
+            const t = i18n[currentLang] || i18n.pt;
+
+            drawerIndex.innerText = `INDEX // ${data.index}`;
+            drawerTitle.innerText = data.title;
+            drawerSubtitle.innerText = data.subtitle;
+
+            drawerContent.innerHTML = data.projects.map((p, idx) => {
+                const waUrl = `https://wa.me/5527997682682?text=${encodeURIComponent(p.whatsappMsg || 'Olá Heloisa!')}`;
+                const sampleCall = p.sample ? `openLightbox(portfolioData['${currentLang}']['${categoryKey}'].projects[${idx}].sample, '${categoryKey}')` : '';
+
+                return `
+                <article class="editorial-entry">
+                    <div class="entry-topline">
+                        <span class="entry-tag">${p.tag}</span>
+                        <span>${p.period}</span>
+                    </div>
+                    <h3 class="entry-title">
+                        <span>${p.title}</span>
+                    </h3>
+                    <p class="entry-description">${p.desc}</p>
+                    <div class="entry-tools-row">
+                        ${p.skills.map(s => `<span class="entry-tool">${s}</span>`).join('')}
+                    </div>
+                    <div class="entry-actions-row">
+                        ${p.sample ? `
+                        <button class="entry-action-btn primary" onclick="${sampleCall}">
+                            ${t.sampleBtn}
+                        </button>
+                        ` : ''}
+                        <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="entry-action-btn whatsapp">
+                            ${t.whatsappBtn} ↗
+                        </a>
+                        <button class="entry-action-btn" onclick="openContactModal('${p.serviceId || ''}')">
+                            ${t.quoteBtn} ↗
+                        </button>
+                    </div>
+                </article>
+                `;
+            }).join('');
+
+            drawerOverlay.classList.add('active');
+            drawer.classList.add('active');
+        }
+
+        window.openLightbox = openLightbox;
+
+        function closeDrawer() {
+            drawerOverlay.classList.remove('active');
+            drawer.classList.remove('active');
+            activeCategoryKey = null;
+        }
+
+        drawerClose.addEventListener('click', closeDrawer);
+        drawerOverlay.addEventListener('click', closeDrawer);
+
+        // Funções de câmera
+        function focusCamera(pos, target) {
+            targetCamPos.copy(pos);
+            targetLookAt.copy(target);
+            isCameraTransitioning = true;
+        }
+
+        function resetCamera() {
+            focusCamera(initialCamPos, initialLookAt);
+        }
+
+        document.getElementById('brand-home').addEventListener('click', () => {
+            resetCamera();
+            if (drawer.classList.contains('active')) closeDrawer();
+            if (classicModal.classList.contains('active')) classicModal.classList.remove('active');
+            if (lightboxContainer.classList.contains('active')) closeLightbox();
+            if (contactContainer.classList.contains('active')) closeContactModal();
+        });
+
+        // Pins interativos
+        document.getElementById('pin-tech').addEventListener('click', () => {
+            focusCamera(new THREE.Vector3(2.5, 4.0, 3.5), new THREE.Vector3(0, 1.4, 0));
+            openDrawer('tech');
+        });
+
+        document.getElementById('pin-editorial').addEventListener('click', () => {
+            focusCamera(new THREE.Vector3(4.5, 5.0, 1.5), new THREE.Vector3(-1.4, 1.5, -2.5));
+            openDrawer('editorial');
+        });
+
+        document.getElementById('pin-ops').addEventListener('click', () => {
+            focusCamera(new THREE.Vector3(1.8, 3.6, 2.2), new THREE.Vector3(1.0, 1.4, 0.4));
+            openDrawer('operations');
+        });
+
+        // 10. INTERAÇÃO E CLIQUES NA CENA
+        window.addEventListener('click', (e) => {
+            if (e.target.closest('header') || e.target.closest('#drawer') || e.target.closest('#classic-modal-container') || e.target.closest('#lightbox-container') || e.target.closest('#contact-container') || e.target.closest('.controls-hint') || e.target.closest('.hotspot-pin')) {
+                return;
+            }
+
+            raycaster.setFromCamera(mouseCoord, camera);
+            const intersects = raycaster.intersectObjects(interactiveObjects, true);
+
+            if (intersects.length > 0) {
+                const hit = intersects[0].object;
+                const data = hit.userData;
+
+                if (data.type === 'lamp') {
+                    toggleLamp();
+                } else if (data.type === 'cat') {
+                    playCatPurr();
+                    // Feedback fofinho da gatinha
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = `${(mouseCoord.x + 1) * window.innerWidth / 2}px`;
+                    tooltip.style.top = `${(-mouseCoord.y + 1) * window.innerHeight / 2}px`;
+                    tooltip.innerHTML = currentLang === 'en' ? '🐾 Mimi: "Meow! Welcome to Helô\'s studio 🤍✨"' : '🐾 Mimi: "Miau! Bem-vindo ao estúdio da Helô 🤍✨"';
+                    setTimeout(() => { tooltip.style.display = 'none'; }, 3200);
+                } else if (portfolioData.pt[data.type]) {
+                    playClickSound(620);
+                    focusCamera(data.focusPos, data.focusTarget);
+                    openDrawer(data.type);
+                }
+            }
+        });
+
+        // MODAL DO MODO CLÁSSICO (RECRUTADOR)
+        btnClassic.addEventListener('click', () => {
+            renderClassicModal(currentLang);
+            classicModal.classList.add('active');
+        });
+
+        btnClassicClose.addEventListener('click', () => {
+            classicModal.classList.remove('active');
+        });
+
+        classicModal.addEventListener('click', (e) => {
+            if (e.target === classicModal) {
+                classicModal.classList.remove('active');
+            }
+        });
+
+        // Fechar modais com tecla ESC
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (lightboxContainer.classList.contains('active')) {
+                    closeLightbox();
+                } else if (contactContainer.classList.contains('active')) {
+                    closeContactModal();
+                } else if (classicModal.classList.contains('active')) {
+                    classicModal.classList.remove('active');
+                } else if (drawer.classList.contains('active')) {
+                    closeDrawer();
+                }
+            }
+        });
+
+        // Inicializa o idioma e modal clássico
+        setLanguage(currentLang);
+
+        // 11. ANIMAÇÃO SUAVE & RENDER LOOP
+        let clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const elapsedTime = clock.getElapsedTime();
+
+            // Pulsação aconchegante da luz da luminária (se acesa) e monitor
+            if (lampOn) {
+                lampLight.intensity = 23 + Math.sin(elapsedTime * 2.5) * 1.5;
+            }
+            monitorLight.intensity = 11 + Math.cos(elapsedTime * 1.8) * 1.2;
+
+            // Animação das partículas de poeira (dust motes)
+            const dPos = dustGeometry.attributes.position.array;
+            for (let i = 0; i < dustCount; i++) {
+                dPos[i * 3 + 1] += Math.sin(elapsedTime + i) * 0.002;
+                dPos[i * 3] += Math.cos(elapsedTime * 0.5 + i) * 0.001;
+            }
+            dustGeometry.attributes.position.needsUpdate = true;
+
+            // Animação do vapor de café subindo
+            const sPos = steamGeo.attributes.position.array;
+            for (let i = 0; i < steamCount; i++) {
+                sPos[i * 3 + 1] += 0.004;
+                sPos[i * 3] += Math.sin(elapsedTime * 4 + i) * 0.001;
+                if (sPos[i * 3 + 1] > 2.0) {
+                    sPos[i * 3 + 1] = 1.62;
+                    sPos[i * 3] = 0.65 + (Math.random() - 0.5) * 0.04;
+                }
+            }
+            steamGeo.attributes.position.needsUpdate = true;
+
+            // Atualização dos marcadores (pins) na tela
+            updateHotspotPins();
+
+            // Interpolação suave de câmera
+            if (isCameraTransitioning) {
+                camera.position.lerp(targetCamPos, 0.05);
+                controls.target.lerp(targetLookAt, 0.05);
+
+                if (camera.position.distanceTo(targetCamPos) < 0.05 && controls.target.distanceTo(targetLookAt) < 0.05) {
+                    camera.position.copy(targetCamPos);
+                    controls.target.copy(targetLookAt);
+                    isCameraTransitioning = false;
+                }
+            }
+
+            // Respiração fofa e rabo do gatinho Mimi
+            if (typeof catBody !== 'undefined' && typeof catTail !== 'undefined') {
+                catBody.scale.y = 0.75 + Math.sin(elapsedTime * 2.2) * 0.025;
+                catTail.rotation.z = 1.2 + Math.sin(elapsedTime * 1.5) * 0.12;
+            }
+
+            // Rotação suave sutil de atmosfera
+            if (!isCameraTransitioning && (!controls.state || controls.state === -1) && !drawer.classList.contains('active')) {
+                roomGroup.rotation.y = Math.sin(elapsedTime * 0.25) * 0.035;
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // 12. RESPONSIVIDADE
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            updateHotspotPins();
+        });
+    </script>
+</body>
+</html>
