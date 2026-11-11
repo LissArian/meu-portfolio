@@ -1074,6 +1074,7 @@
                 <button class="close-btn" id="contact-close">[ FECHAR &times; ]</button>
             </div>
             <form class="contact-body" id="contact-form">
+                <input type="text" id="contact-trap" name="bot_trap" style="display:none !important;" tabindex="-1" autocomplete="off" aria-hidden="true">
                 <div class="form-status" id="contact-status"></div>
 
                 <div class="form-group">
@@ -2742,6 +2743,7 @@
             const email = document.getElementById('contact-email').value.trim();
             const subject = contactSubjectSelect.value;
             const message = document.getElementById('contact-message').value.trim();
+            const botTrap = document.getElementById('contact-trap')?.value || '';
 
             contactSubmitBtn.disabled = true;
             contactSubmitText.innerText = t.contactSubmitting;
@@ -2750,7 +2752,7 @@
                 const response = await fetch('/api/contact', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, subject, message, lang: currentLang })
+                    body: JSON.stringify({ name, email, subject, message, lang: currentLang, bot_trap: botTrap })
                 });
 
                 if (response.ok) {
