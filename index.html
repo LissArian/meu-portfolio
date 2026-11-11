@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heloisa Cunha | Home Office 3D & Portfólio</title>
+        <!-- SEO, Favicon & Social Cards -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23fdf2f8'/><path d='M50 82 C20 54 10 40 10 26 C10 14 20 6 32 6 C41 6 47 11 50 16 C53 11 59 6 68 6 C80 6 90 14 90 26 C90 40 80 54 50 82 Z' fill='%23ec4899'/><text x='50%25' y='54%25' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='26' fill='white'>HC</text></svg>">
+    <meta name="description" content="Portfólio 3D interativo de Heloisa Cunha — Designer Gráfica Editorial, Desenvolvedora Front-end / UX e Especialista em Operações Remotas & CRM.">
+    <meta name="keywords" content="Heloisa Cunha, Designer Editorial, Diagramação de Livros, Three.js, Front-end, UX/UI, Zendesk, Zoho CRM, Manychat, Tradução Inglês">
+    <meta name="author" content="Heloisa S. Cunha de Oliveira">
+    <meta name="theme-color" content="#fdf2f8">
+
+    <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Heloisa Cunha | Home Office 3D & Portfólio">
+    <meta property="og:description" content="Explore meu estúdio 3D interativo! Design editorial de livros, experiências digitais em Three.js e operações corporativas.">
+    <meta property="og:image" content="Exploring the art of isometric office design with this vibrant setup_Which corner of our isometric office room inspires you the most_ #pixbake #Officelnspo #IsometricDesign #Pixbake.jpeg">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Heloisa Cunha | Home Office 3D & Portfólio">
+    <meta name="twitter:description" content="Explore meu estúdio 3D interativo! Design editorial de livros, experiências digitais em Three.js e operações corporativas.">
+    <meta name="twitter:image" content="Exploring the art of isometric office design with this vibrant setup_Which corner of our isometric office room inspires you the most_ #pixbake #Officelnspo #IsometricDesign #Pixbake.jpeg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -867,6 +886,193 @@
             flex-wrap: wrap;
         }
 
+
+        /* Preloader Pastel Suave */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #1a1226;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+
+        #preloader.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .preloader-icon {
+            font-size: 2.8rem;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .preloader-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fdf2f8;
+            letter-spacing: -0.01em;
+        }
+
+        .preloader-sub {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.74rem;
+            color: #d8b4fe;
+            letter-spacing: 0.05em;
+        }
+
+        .preloader-bar {
+            width: 180px;
+            height: 4px;
+            background: #2e1065;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .preloader-bar-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #ec4899, #8b5cf6, #10b981);
+            animation: preloader-fill 1.2s infinite ease-in-out;
+            transform-origin: 0% 50%;
+        }
+
+        @keyframes preloader-fill {
+            0% { transform: scaleX(0.15) translateX(-50%); }
+            50% { transform: scaleX(0.6) translateX(30%); }
+            100% { transform: scaleX(0.95) translateX(110%); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Modal do Painel de Administradora (Leads & Mensagens) */
+        .admin-modal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(26, 18, 38, 0.85);
+            z-index: 70;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            backdrop-filter: blur(5px);
+            user-select: text;
+        }
+
+        .admin-modal-container.active {
+            display: flex;
+        }
+
+        .admin-modal {
+            background: #fffafd;
+            border: 1.5px solid #eedbf5;
+            border-radius: 6px;
+            width: 960px;
+            max-width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 30px 90px rgba(46, 16, 101, 0.35);
+            overflow: hidden;
+        }
+
+        .admin-modal-header {
+            padding: 20px 28px;
+            background: #fbf5fe;
+            border-bottom: 1px solid #eedbf5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-modal-body {
+            padding: 24px 28px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: #fffafd;
+            flex: 1;
+        }
+
+        .lead-card {
+            background: #ffffff;
+            border: 1px solid #eedbf5;
+            padding: 16px 20px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 2px 10px rgba(46, 16, 101, 0.03);
+            transition: all 0.2s ease;
+        }
+
+        .lead-card:hover {
+            border-color: #d8b4fe;
+            box-shadow: 0 4px 16px rgba(46, 16, 101, 0.08);
+        }
+
+        .lead-topline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #8b7994;
+        }
+
+        .lead-client {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #2e1065;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lead-subject {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            background: #f5f3ff;
+            color: #7c3aed;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .lead-message {
+            font-size: 0.88rem;
+            color: #4a3e54;
+            line-height: 1.6;
+            background: #fdfaf6;
+            padding: 12px 14px;
+            border-left: 3px solid #ec4899;
+            white-space: pre-wrap;
+        }
+
+        .lead-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
         @media (max-width: 768px) {
             header { padding: 14px 18px; }
             .brand-info p { display: none; }
@@ -877,6 +1083,14 @@
     </style>
 </head>
 <body>
+    <!-- Preloader Pastel Aconchegante -->
+    <div id="preloader">
+        <div class="preloader-icon">🌸</div>
+        <div class="preloader-title">Heloisa Cunha &bull; Studio 3D</div>
+        <div class="preloader-sub" id="preloader-sub-text">Carregando ambiente isométrico...</div>
+        <div class="preloader-bar"><div class="preloader-bar-fill"></div></div>
+    </div>
+
     <div id="canvas-container"></div>
     <div id="tooltip-3d"></div>
 
@@ -1122,6 +1336,28 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+
+
+    <!-- Modal do Painel de Administradora (Leads & Orçamentos Recebidos) -->
+    <div class="admin-modal-container" id="admin-modal-container">
+        <div class="admin-modal">
+            <div class="admin-modal-header">
+                <div>
+                    <span class="drawer-index" style="color: #db2777;">ADMIN // DASHBOARD</span>
+                    <h3 class="drawer-title" style="font-size: 1.25rem; margin-top: 4px;">Mensagens & Orçamentos Recebidos</h3>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button class="entry-action-btn" id="btn-admin-refresh" title="Atualizar mensagens">
+                        🔄 Atualizar
+                    </button>
+                    <button class="close-btn" id="admin-modal-close">[ FECHAR &times; ]</button>
+                </div>
+            </div>
+            <div class="admin-modal-body" id="admin-modal-body">
+                <!-- Injetado dinamicamente via JS -->
+            </div>
         </div>
     </div>
 
@@ -2941,9 +3177,22 @@
 
         // 11. ANIMAÇÃO SUAVE & RENDER LOOP
         let clock = new THREE.Clock();
+        let preloaderDismissed = false;
 
         function animate() {
             requestAnimationFrame(animate);
+
+            // Desativa preloader suavemente após o primeiro render
+            if (!preloaderDismissed) {
+                preloaderDismissed = true;
+                setTimeout(() => {
+                    const p = document.getElementById('preloader');
+                    if (p) {
+                        p.classList.add('fade-out');
+                        setTimeout(() => p.remove(), 600);
+                    }
+                }, 350);
+            }
 
             const elapsedTime = clock.getElapsedTime();
 
@@ -3012,6 +3261,145 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             updateHotspotPins();
         });
+
+        // ==========================================================
+        // 13. PAINEL DE CONTROLE DE LEADS / ADMIN DASHBOARD
+        // ==========================================================
+        const adminModal = document.getElementById('admin-modal-container');
+        const adminModalClose = document.getElementById('admin-modal-close');
+        const adminModalBody = document.getElementById('admin-modal-body');
+        const btnAdminRefresh = document.getElementById('btn-admin-refresh');
+        const monogramEl = document.querySelector('.monogram');
+
+        async function openAdminDashboard() {
+            let token = localStorage.getItem('portfolio_admin_token') || 'heloisa_admin_2026_sec';
+            
+            adminModalBody.innerHTML = `
+                <div style="text-align: center; padding: 40px 0; color: #8b7994; font-family: 'Space Mono', monospace;">
+                    🌸 Carregando mensagens do servidor com token seguro...
+                </div>
+            `;
+            adminModal.classList.add('active');
+
+            try {
+                const res = await fetch(`/api/contact?token=${encodeURIComponent(token)}`);
+                if (res.status === 401 || res.status === 403) {
+                    const promptToken = prompt("🔒 Acesso Restrito: Digite o token de administradora:", "");
+                    if (!promptToken) {
+                        adminModal.classList.remove('active');
+                        return;
+                    }
+                    token = promptToken.trim();
+                    localStorage.setItem('portfolio_admin_token', token);
+                    return openAdminDashboard();
+                }
+
+                if (!res.ok) throw new Error("Erro ao buscar contatos do servidor.");
+
+                const data = await res.json();
+                const messages = (data.messages || []).reverse(); // Mais recentes primeiro
+
+                if (messages.length === 0) {
+                    adminModalBody.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; background: #ffffff; border: 1px dashed #eedbf5; border-radius: 4px;">
+                            <span style="font-size: 2.2rem;">📬</span>
+                            <h4 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; color: #2e1065; margin: 10px 0 4px;">Nenhuma mensagem recebida ainda</h4>
+                            <p style="font-size: 0.82rem; color: #8b7994; font-family: 'Space Mono', monospace;">Quando clientes ou recrutadores enviarem mensagens pelo formulário, elas aparecerão listadas aqui!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                adminModalBody.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #eedbf5;">
+                        <span style="font-family: 'Space Mono', monospace; font-size: 0.74rem; color: #047857; background: #ecfdf5; padding: 4px 10px; border-radius: 3px; font-weight: 700;">
+                            ✓ ${messages.length} ${messages.length === 1 ? 'MENSAGEM REGISTRADA' : 'MENSAGENS REGISTRADAS'}
+                        </span>
+                        <span style="font-family: 'Space Mono', monospace; font-size: 0.7rem; color: #8b7994;">
+                            Servidor: porta 14726 &bull; Token ativo
+                        </span>
+                    </div>
+
+                    ${messages.map((m, idx) => {
+                        const replyMailSubject = encodeURIComponent(`Re: [Portfólio] ${m.subject || 'Contato'}`);
+                        const replyMailBody = encodeURIComponent(`Olá ${m.name},\n\nObrigada pelo contato através do meu portfólio!\n\n---\nMensagem original:\n${m.message}`);
+                        const mailtoLink = `mailto:${m.email}?subject=${replyMailSubject}&body=${replyMailBody}`;
+
+                        return `
+                        <div class="lead-card">
+                            <div class="lead-topline">
+                                <span class="lead-subject">${m.subject || 'Contato Geral'}</span>
+                                <span>${m.date_human || m.timestamp || ''} &bull; IP: ${m.client_ip || 'Local'}</span>
+                            </div>
+
+                            <div class="lead-client">
+                                <span>👤 ${m.name}</span>
+                                <span style="font-size: 0.8rem; font-weight: 400; color: #7c3aed;">&lt;${m.email}&gt;</span>
+                            </div>
+
+                            <div class="lead-message">${m.message}</div>
+
+                            <div class="lead-actions">
+                                <a href="${mailtoLink}" class="entry-action-btn primary" target="_blank">
+                                    ✉ Responder por E-mail ↗
+                                </a>
+                                <a href="https://wa.me/?text=${encodeURIComponent('Olá ' + m.name + ', vi sua mensagem no meu portfólio!')}" target="_blank" class="entry-action-btn whatsapp">
+                                    💬 Chamar no WhatsApp ↗
+                                </a>
+                            </div>
+                        </div>
+                        `;
+                    }).join('')}
+                `;
+
+            } catch (err) {
+                adminModalBody.innerHTML = `
+                    <div style="padding: 24px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 4px; color: #b91c1c; font-family: 'Space Mono', monospace; font-size: 0.8rem;">
+                        ⚠️ Não foi possível conectar ao servidor backend em /api/contact.<br>
+                        Verifique se o seu servidor Python está ativo na porta 14726.
+                    </div>
+                `;
+            }
+        }
+
+        if (monogramEl) {
+            monogramEl.title = "Clique duplo para abrir Painel de Leads da Administradora 👑";
+            monogramEl.addEventListener('dblclick', () => {
+                playClickSound(900);
+                openAdminDashboard();
+            });
+        }
+
+        if (btnAdminRefresh) {
+            btnAdminRefresh.addEventListener('click', () => {
+                playClickSound();
+                openAdminDashboard();
+            });
+        }
+
+        if (adminModalClose) {
+            adminModalClose.addEventListener('click', () => {
+                adminModal.classList.remove('active');
+            });
+        }
+
+        adminModal.addEventListener('click', (e) => {
+            if (e.target === adminModal) adminModal.classList.remove('active');
+        });
+
+        // Atalho de teclado: Ctrl + Shift + A para abrir Admin
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
+                e.preventDefault();
+                openAdminDashboard();
+            }
+        });
+
+        // Abre automaticamente se tiver ?admin na URL
+        if (window.location.search.includes('admin')) {
+            setTimeout(openAdminDashboard, 600);
+        }
+
     </script>
 </body>
 </html>
