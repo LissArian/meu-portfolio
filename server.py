@@ -48,6 +48,13 @@ class SecurePortfolioHandler(http.server.SimpleHTTPRequestHandler):
         # Log limpo no terminal com timestamp
         sys.stderr.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {format % args}\n")
 
+    def copyfile(self, source, outputfile):
+        """Trata desconexões repentinas de clientes sem poluir o log com BrokenPipe"""
+        try:
+            super().copyfile(source, outputfile)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+
     def send_security_headers(self):
         """Aplica cabeçalhos defensivos modernos de segurança HTTP"""
         self.send_header('X-Content-Type-Options', 'nosniff')
